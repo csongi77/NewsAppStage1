@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="o_dp">0dp</dimen>
+    <dimen name="layout_weight_one">1</dimen>
+    <dimen name="layout_weight_half">0.5</dimen>
+    <dimen name="list_item_layout_padding">6dp</dimen>
+</resources>

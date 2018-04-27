@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NewsApp</string>
+    <string name="loremipsum45">Lorem ipsum dolor sit amet, consectetuer adip</string>
+    <string name="loremipsum35">Lorem ipsum dolor sit amet, consect</string>
+    <string name="list_item_txt_author_static">Author:</string>
+    <string name="section">Section</string>
+    <string name="published">Published:</string>
+    <string name="date_time_example">2018-04-27,13.13</string>
 </resources>
