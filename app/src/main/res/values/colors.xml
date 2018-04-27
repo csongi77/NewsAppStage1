@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- colors for List Items -->
+    <color name="color_business">#b7d6ff</color>
+    <color name="color_news">#ffcc80</color>
+    <color name="color_environment">#c4ffd1</color>
+    <color name="color_neutral">#b1b6ba</color>
 </resources>

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/color_neutral">
 
     <!-- the default news list item -->
     <LinearLayout
@@ -12,8 +13,8 @@
         android:layout_weight="@dimen/layout_weight_one"
         android:orientation="vertical"
         android:visibility="visible"
-        android:paddingLeft="@dimen/list_item_layout_padding"
-        android:paddingTop="@dimen/list_item_layout_padding">
+        android:padding="@dimen/list_item_layout_padding"
+        android:background="@color/color_environment">
 
         <!-- Title of Article parsed from JSON-->
         <TextView
@@ -53,15 +54,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/list_item_layout_padding">
+            android:paddingTop="@dimen/list_item_layout_padding"
+            android:gravity="center_vertical">
 
             <!-- Section parsed from JSON -->
             <TextView
+                android:id="@+id/list_item_txt_section"
                 android:layout_width="@dimen/o_dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="@dimen/layout_weight_half"
                 tools:text="@string/section"
-                style="@style/TextAppearance.AppCompat.Caption"/>
+                style="@style/TextAppearance.AppCompat.Subhead"/>
 
             <!-- Published placeholder, visible only if available -->
             <LinearLayout
@@ -82,6 +85,7 @@
 
                 <!-- Date Published parsed from JSON string -->
                 <TextView
+                    android:id="@+id/list_item_txt_date_published"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="@string/date_time_example"
