@@ -6,4 +6,6 @@
     <string name="section">Section</string>
     <string name="published">Published:</string>
     <string name="date_time_example">2018-04-27,13.13</string>
+    <string name="no_network_error_message">No network detected. Ensure your device is connected!</string>
+    <string name="request_method">GET</string>
 </resources>

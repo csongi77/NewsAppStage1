@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_activity_placeholder"
     tools:context=".MainActivity">
 
 <!-- This is the main container for all layouts yet. Later it can be extended by a drawer, or add
