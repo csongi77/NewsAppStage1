@@ -1,28 +1,33 @@
 package com.example.csongor.newsapp.guardian_api;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 public class GuardianSearchQuery implements GuardianQuery{
 
     private static final String GUARDIAN_URL="http://content.guardianapis.com/search?";
     @ApiKey private static final  String  API_KEY=ApiKey.API_KEY;
-    private static final String PAGE_NUMBER="&page=";
+    // string used in getQueryString() to get &page=1 URL part
+    private static final String PAGE_SYMBOL ="&page=";
     private int mPage;
-
+    // string used in getQueryString() to get &q=xxx URL part
+    private static final String QUERY_SYMBOL ="&q=";
+    private String mQueryString;
 
     /**
      * Default constructor for this wrapped query object.
      * Later there can be add another class for example search query in a specified section
      * { GuardianSearchBySection(String sectionName) etc. }
+     * @param queryString - the query string for the URL request
      */
-    public GuardianSearchQuery() {
+    public GuardianSearchQuery(String queryString) {
         mPage=1;
+        mQueryString=queryString;
     }
 
-    // Implementing Parcelable
+    // Parcelable builder implementation
     protected GuardianSearchQuery(Parcel in) {
         mPage = in.readInt();
+        mQueryString = in.readString();
     }
 
     public static final Creator<GuardianSearchQuery> CREATOR = new Creator<GuardianSearchQuery>() {
@@ -55,8 +60,9 @@ public class GuardianSearchQuery implements GuardianQuery{
      */
     @Override
     public String getQueryString() {
-        return GUARDIAN_URL+API_KEY+PAGE_NUMBER+String.valueOf(mPage);
+        return GUARDIAN_URL+ QUERY_SYMBOL +mQueryString+API_KEY+ PAGE_SYMBOL +String.valueOf(mPage);
     }
+
 
     /**
      * Describe the kinds of special objects contained in this Parcelable
@@ -83,5 +89,6 @@ public class GuardianSearchQuery implements GuardianQuery{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mPage);
+        dest.writeString(mQueryString);
     }
 }
