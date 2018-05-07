@@ -9,12 +9,12 @@ public class GuardianSearchQuery implements GuardianQuery{
     // string used in getQueryString() to get &page=1 URL part
     private static final String PAGE_SYMBOL ="&page=";
     private int mPage;
-    // string used in getQueryString() to get &q=xxx URL part
-    private static final String QUERY_SYMBOL ="&q=";
+    // string used in getQueryString() to get q=xxx URL part
+    private static final String QUERY_SYMBOL ="q=";
     private String mQueryString;
 
     /**
-     * Default constructor for this wrapped query object.
+     * Default constructor for this query object.
      * Later there can be add another class for example search query in a specified section
      * { GuardianSearchBySection(String sectionName) etc. }
      * @param queryString - the query string for the URL request

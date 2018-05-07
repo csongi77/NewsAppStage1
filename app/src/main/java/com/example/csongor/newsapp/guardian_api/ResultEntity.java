@@ -1,5 +1,7 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.os.Parcelable;
+
 /**
  * This is the main interface of results. Results may be parsed into NewsEntity but later
  * it can be easy extensible to films, books, series, tags, sections etc.
@@ -7,6 +9,6 @@ package com.example.csongor.newsapp.guardian_api;
  * find news only in the previously listed section results.
  *
  */
-public interface ResultEntity {
+public interface ResultEntity extends Parcelable{
 
 }

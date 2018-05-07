@@ -1,9 +1,12 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Basic News Entity
  */
-public class NewsEntity implements ResultEntity {
+public class NewsEntity implements ResultEntity{
     private final String mTitle;
     private final String mSection;
     private final String mAuthor;
@@ -25,6 +28,25 @@ public class NewsEntity implements ResultEntity {
         this.mDatePublished = datePublished;
 
     }
+
+    protected NewsEntity(Parcel in) {
+        mTitle = in.readString();
+        mSection = in.readString();
+        mAuthor = in.readString();
+        mDatePublished = in.readString();
+    }
+
+    public static final Creator<NewsEntity> CREATOR = new Creator<NewsEntity>() {
+        @Override
+        public NewsEntity createFromParcel(Parcel in) {
+            return new NewsEntity(in);
+        }
+
+        @Override
+        public NewsEntity[] newArray(int size) {
+            return new NewsEntity[size];
+        }
+    };
 
     /**
      * getter for title
@@ -90,5 +112,35 @@ public class NewsEntity implements ResultEntity {
         result = 31 * result + (mAuthor != null ? mAuthor.hashCode() : 0);
         result = 31 * result + (mDatePublished != null ? mDatePublished.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable
+     * instance's marshaled representation. For example, if the object will
+     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
+     * the return value of this method must include the
+     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
+     *
+     * @return a bitmask indicating the set of special object types marshaled
+     * by this Parcelable object instance.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mTitle);
+        dest.writeString(mSection);
+        dest.writeString(mAuthor);
+        dest.writeString(mDatePublished);
     }
 }

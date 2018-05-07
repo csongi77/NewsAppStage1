@@ -1,5 +1,8 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Abstract Query Wrapper for components (date modifier, section modifier etc.)
  */
@@ -16,6 +19,11 @@ public abstract class GuardianQueryAbstractWrapper implements GuardianQuery {
     protected GuardianQueryAbstractWrapper(GuardianQuery wrappedQuery){
         this.mWrappedQuery=wrappedQuery;
     }
+
+    // requred by Parcelable implementation
+    protected GuardianQueryAbstractWrapper() {
+    }
+
 
     /**
      * Since the Guardian API accepts page number in query this value can be used to
