@@ -1,5 +1,6 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
@@ -9,6 +10,6 @@ import android.os.Parcelable;
  * find news only in the previously listed section results.
  *
  */
-public interface ResultEntity extends Parcelable{
+public interface ResultEntity extends Parcelable {
 
 }

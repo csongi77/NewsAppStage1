@@ -12,7 +12,7 @@ import android.os.Parcelable;
  * At this moment (News Reader App stage 1) only search object wrapper will be delivered but
  * later it can be easily extendable.
  */
-public interface GuardianQuery extends Parcelable {
+ public interface GuardianQuery extends Parcelable {
 
     /**
      * Since the Guardian API accepts page number in query this value can be used to

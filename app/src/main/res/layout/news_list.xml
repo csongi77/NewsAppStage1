@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- This is the news list container -->
 <ListView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/news_list_view">
-    <!-- This is the news list container -->
+    android:id="@+id/news_list_view"
+    android:visibility="gone"/>
+<ProgressBar
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    style="@style/Widget.AppCompat.ProgressBar"
+    android:layout_gravity="center"
+    android:visibility="gone"/>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@+id/news_list_txt_message"
+    android:text="@string/news_list_txt_no_result"/>
 
-</ListView>
+</LinearLayout>

@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Basic News Entity
  */
-public class NewsEntity implements ResultEntity{
+public class NewsEntity implements ResultEntity {
     private final String mTitle;
     private final String mSection;
     private final String mAuthor;
