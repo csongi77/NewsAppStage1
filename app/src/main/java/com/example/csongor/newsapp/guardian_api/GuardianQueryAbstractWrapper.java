@@ -12,7 +12,7 @@ public abstract class GuardianQueryAbstractWrapper implements GuardianQuery {
 
 
     /**
-     * Basi
+     * Basic constructor
      * @param wrappedQuery - the Base Query class. At the moment (News App stage 1) the only
      *                     possible argument can be a GuardianSearchQuery object.
      */
