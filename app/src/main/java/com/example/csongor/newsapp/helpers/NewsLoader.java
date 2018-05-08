@@ -10,8 +10,6 @@ import android.util.Log;
 import com.example.csongor.newsapp.BundleKeys;
 import com.example.csongor.newsapp.guardian_api.GuardianQuery;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
-import com.example.csongor.newsapp.guardian_api.QueryController;
-import com.example.csongor.newsapp.guardian_api.ResultEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,10 +48,11 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
         if (mNewsList == null) {
             // First make connection and get data based on URL REST API
             String jsonString = connectAndLoad(mUrl);
-            // Parse result into List<News>
+            // Parse result into List<NewsEntity>
             if (jsonString != null)
                 mNewsList = parseJsonToList(jsonString);
         }
+        // set up result Bundle. if there are more results than a single page, with these values can be reload following pages
         Bundle toReturn = new Bundle();
         toReturn.putParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST, (ArrayList) mNewsList);
         toReturn.putInt(BundleKeys.BUNDLE_PAGES, mPages);
@@ -87,7 +86,6 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
         try {
             // Open connection
             URL url = new URL(urlToParse);
-            Log.d(LOG_TAG, "-----> trying to open: " + url.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(REQUEST_METHOD);
             urlConnection.setConnectTimeout(10 * 1000);
@@ -131,17 +129,19 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
             // parsing JsonArray's news list
             for (int i = 0; i < newsListArray.length(); i++) {
                 JSONObject result = newsListArray.getJSONObject(i);
-                String title = result.getString("webTitle");
-                String section = result.getString("sectionName");
+                String title = result.getString("webTitle").trim();
                 String author;
-                if (result.has("author")) {
-                    author = result.getString("author");
-                } else {
+                if(title.contains("|")){
+                    String[] toTrim=title.split("[|]");
+                    author=toTrim[1].trim();
+                    title=toTrim[0].trim();
+                }else {
                     author = "Not available";
                 }
-                String datePublished = result.getString("webPublicationDate");
+                String section = result.getString("sectionName").trim();
+                String datePublished = result.getString("webPublicationDate").trim();
                 if (datePublished == null) datePublished = "Unknown";
-                String webUrl = result.getString("webUrl");
+                String webUrl = result.getString("webUrl").trim();
                 NewsEntity newsEntity = new NewsEntity(title, section, author, datePublished, webUrl);
                 newsListToReturn.add(newsEntity);
             }

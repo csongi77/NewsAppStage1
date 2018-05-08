@@ -16,13 +16,20 @@ public class GuardianSearchQuery implements GuardianQuery{
     private static final String PAGE_SIZE_SYMBOL="&page-size=50";
 
     /**
+     * Empty constructor if there are no search query.
+     */
+    public GuardianSearchQuery() {
+        mPage=1;
+    }
+
+    /**
      * Default constructor for this query object.
      * Later there can be add another class for example search query in a specified section
      * { GuardianSearchBySection(String sectionName) etc. }
      * @param queryString - the query string for the URL request
      */
     public GuardianSearchQuery(String queryString) {
-        mPage=1;
+        this();
         mQueryString=queryString;
     }
 
@@ -62,6 +69,8 @@ public class GuardianSearchQuery implements GuardianQuery{
      */
     @Override
     public String getQueryString() {
+        if(mQueryString==null||mQueryString.equalsIgnoreCase(""))
+            return GUARDIAN_URL+API_KEY+ PAGE_SIZE_SYMBOL+ PAGE_SYMBOL +String.valueOf(mPage);
         return GUARDIAN_URL+ QUERY_SYMBOL +mQueryString+API_KEY+ PAGE_SIZE_SYMBOL+ PAGE_SYMBOL +String.valueOf(mPage);
     }
 
