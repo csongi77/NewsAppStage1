@@ -21,7 +21,7 @@ public class GuardianSectionWrapper extends GuardianQueryAbstractWrapper {
      */
     public GuardianSectionWrapper(GuardianQuery wrappedQuery, List<String> sectionList) {
         super(wrappedQuery);
-        this.mSections = mSections;
+        mSections = sectionList;
     }
 
     protected GuardianSectionWrapper(Parcel in) {

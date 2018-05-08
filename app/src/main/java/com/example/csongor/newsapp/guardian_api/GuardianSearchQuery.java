@@ -12,6 +12,8 @@ public class GuardianSearchQuery implements GuardianQuery{
     // string used in getQueryString() to get q=xxx URL part
     private static final String QUERY_SYMBOL ="q=";
     private String mQueryString;
+    // set up page size
+    private static final String PAGE_SIZE_SYMBOL="&page-size=50";
 
     /**
      * Default constructor for this query object.
@@ -60,7 +62,7 @@ public class GuardianSearchQuery implements GuardianQuery{
      */
     @Override
     public String getQueryString() {
-        return GUARDIAN_URL+ QUERY_SYMBOL +mQueryString+API_KEY+ PAGE_SYMBOL +String.valueOf(mPage);
+        return GUARDIAN_URL+ QUERY_SYMBOL +mQueryString+API_KEY+ PAGE_SIZE_SYMBOL+ PAGE_SYMBOL +String.valueOf(mPage);
     }
 
 

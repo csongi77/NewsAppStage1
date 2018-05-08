@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="@string/loremipsum45"
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            style="@style/Base.TextAppearance.AppCompat.Body2"
             android:paddingTop="@dimen/list_item_layout_padding"/>
 
         <!-- Author of Article placeholder, visible only if available-->
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="@dimen/layout_weight_half"
                 tools:text="@string/section"
-                style="@style/TextAppearance.AppCompat.Subhead"/>
+                style="@style/TextAppearance.AppCompat.Body1"/>
 
             <!-- Published placeholder, visible only if available -->
             <LinearLayout

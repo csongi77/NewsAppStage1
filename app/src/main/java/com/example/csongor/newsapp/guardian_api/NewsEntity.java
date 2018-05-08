@@ -11,6 +11,7 @@ public class NewsEntity implements ResultEntity {
     private final String mSection;
     private final String mAuthor;
     private final String mDatePublished;
+    private final String mURL;
     // private final long mDateLong;
 
     /**
@@ -20,20 +21,24 @@ public class NewsEntity implements ResultEntity {
      * @param section       - section of News
      * @param author        - author of News
      * @param datePublished - the publication date
+     * @param url           - the URL of Article
      */
-    public NewsEntity(String title, String section, String author, String datePublished) {
-        this.mTitle = title;
-        this.mSection = section;
-        this.mAuthor = author;
-        this.mDatePublished = datePublished;
+    public NewsEntity(String title, String section, String author, String datePublished, String url) {
+        mTitle = title;
+        mSection = section;
+        mAuthor = author;
+        mDatePublished = datePublished;
+        mURL = url;
 
     }
 
+    // Parcelable implementation
     protected NewsEntity(Parcel in) {
         mTitle = in.readString();
         mSection = in.readString();
         mAuthor = in.readString();
         mDatePublished = in.readString();
+        mURL = in.readString();
     }
 
     public static final Creator<NewsEntity> CREATOR = new Creator<NewsEntity>() {
@@ -50,6 +55,7 @@ public class NewsEntity implements ResultEntity {
 
     /**
      * getter for title
+     *
      * @return - title String of news object
      */
     public String getTitle() {
@@ -58,6 +64,7 @@ public class NewsEntity implements ResultEntity {
 
     /**
      * getter for Section
+     *
      * @return - the Section String of this instance
      */
     public String getSection() {
@@ -66,21 +73,31 @@ public class NewsEntity implements ResultEntity {
 
     /**
      * getter for Author. If the value is null or "" it returns "Anonymus"
+     *
      * @return - name of Author
      */
     public String getAuthor() {
-        if(mAuthor==null || mAuthor.equalsIgnoreCase(""))return  "Anonymus";
+        if (mAuthor == null || mAuthor.equalsIgnoreCase("")) return "Anonymus";
         return mAuthor;
     }
 
     /**
      * getter for Date of publication
+     *
      * @return publication Date in String format
      */
     public String getDatePublished() {
         return mDatePublished;
     }
 
+    /**
+     * getter for Article
+     *
+     * @return - the URL string of Article
+     */
+    public String getURL() {
+        return mURL;
+    }
     /**
      * Overriding equals in order to let these object comparable
      *
@@ -114,6 +131,7 @@ public class NewsEntity implements ResultEntity {
         return result;
     }
 
+
     /**
      * Describe the kinds of special objects contained in this Parcelable
      * instance's marshaled representation. For example, if the object will
@@ -142,5 +160,8 @@ public class NewsEntity implements ResultEntity {
         dest.writeString(mSection);
         dest.writeString(mAuthor);
         dest.writeString(mDatePublished);
+        dest.writeString(mURL);
     }
 }
+
+
