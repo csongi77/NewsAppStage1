@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- This is the news list container -->
-<ListView
+<android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/news_list_view"
-    android:visibility="gone"/>
+    android:visibility="visible"/>
 <android.support.v4.widget.ContentLoadingProgressBar
     android:id="@+id/news_list_progressbar"
     android:layout_width="wrap_content"

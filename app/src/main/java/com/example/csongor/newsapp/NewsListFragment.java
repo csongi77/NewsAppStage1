@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private TextView mMessage;
     private ContentLoadingProgressBar mProgressBar;
     private LoaderManager mLoaderManager;
+    private RecyclerView mRecyclerView;
 
 
     // Default constructor
@@ -72,7 +75,10 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // assigning values to Views
         mMessage = mRootView.findViewById(R.id.news_list_txt_message);
-        mListView = mRootView.findViewById(R.id.news_list_view);
+        //mListView
+        mRecyclerView = mRootView.findViewById(R.id.news_list_view);
+        LinearLayoutManager mLinearLayoutManager=new LinearLayoutManager(getContext());
+
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
 
         // getting arguments from Bundle
