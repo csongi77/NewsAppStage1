@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?><!-- result list controller layout. If there are more results which can be
+downloaded at once, this menu helps to download more pages -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_controller_menu"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@android:color/black"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <!-- To first page button -->
+    <LinearLayout
+        android:id="@+id/list_controller_first_page"
+        android:layout_width="@dimen/list_controller_menu_item_layout_width"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_first_page" />
+
+        <TextView
+            style="@style/list_controller_menu_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_controller_first" />
+    </LinearLayout>
+
+    <!-- To back one page button -->
+    <LinearLayout
+        android:id="@+id/list_controller_back_page"
+        android:layout_width="@dimen/list_controller_menu_item_layout_width"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_navigate_before" />
+
+        <TextView
+            style="@style/list_controller_menu_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_controller_back" />
+    </LinearLayout>
+
+    <!-- To specified page button -->
+    <LinearLayout
+        android:id="@+id/list_controller_specified_page"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="6dp">
+
+        <EditText
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:hint="@string/list_controller_hint"
+            android:padding="6dp"
+            android:gravity="end"
+            android:textSize="@dimen/list_controller_txt_size" />
+
+        <TextView
+            style="@style/list_controller_menu_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="@string/list_controller_of_pages" />
+    </LinearLayout>
+
+    <!-- To next page button -->
+    <LinearLayout
+        android:id="@+id/list_controller_next_page"
+        android:layout_width="@dimen/list_controller_menu_item_layout_width"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_navigate_next" />
+
+        <TextView
+            style="@style/list_controller_menu_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_controller_next" />
+    </LinearLayout>
+
+    <!-- To last page button -->
+    <LinearLayout
+        android:id="@+id/list_controller_last_page"
+        android:layout_width="@dimen/list_controller_menu_item_layout_width"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_last_page" />
+
+        <TextView
+            style="@style/list_controller_menu_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_controller_last" />
+    </LinearLayout>
+</LinearLayout>

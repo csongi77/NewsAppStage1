@@ -2,13 +2,18 @@ package com.example.csongor.newsapp.helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Entity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,19 +21,28 @@ import com.example.csongor.newsapp.R;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
+/**
+ * Recycler View adapter instead ArrayAdapter in order to avoid findViewById methods.
+ * This was suggested by my Reviewer (Vlad Spreys).
+ * Infos, tutorials taken from:
+ * http://spreys.com/view-holder-design-pattern-for-android/
+ * https://github.com/googlesamples/android-RecyclerView
+ */
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
-
+    private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
     private List<NewsEntity> mNewsList;
+    private Context mContext;
 
     /**
      * Constructor for Adapter.
+     *
      * @param newsList - the list we want to show
      */
-    public NewsAdapter(List<NewsEntity> newsList) {
+    public NewsAdapter(List<NewsEntity> newsList, Context context) {
         mNewsList = newsList;
+        mContext = context;
     }
 
     /**
@@ -54,9 +68,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View mRootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
+        View mRootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new ViewHolder(mRootView);
     }
+
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
@@ -80,11 +95,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        NewsEntity entity=mNewsList.get(position);
-        holder.title.setText(entity.getTitle());
-        holder.datePublished.setText(entity.getDatePublished());
-        holder.section.setText(entity.getSection());
-        holder.author.setText(entity.getAuthor());
+        NewsEntity entity = mNewsList.get(position);
+        holder.getTitle().setText(entity.getTitle());
+        holder.getDatePublished().setText(entity.getDatePublished());
+        holder.getSection().setText(entity.getSection());
+        holder.getAuthor().setText(entity.getAuthor());
+        switch (entity.getSection().toLowerCase()) {
+            case "news":
+                holder.getLayout().setBackgroundColor(holder.newsColor);
+                return;
+            case "business":
+                holder.getLayout().setBackgroundColor(holder.businessColor);
+                return;
+            default:
+                holder.getLayout().setBackgroundColor(holder.environmentColor);
+        }
     }
 
     /**
@@ -97,23 +122,41 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return mNewsList.size();
     }
 
+
     // ViewHolder pattern implementation in order to avoid the cost of finding views by id
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
         private final TextView author;
         private final TextView section;
         private final TextView datePublished;
+        private final LinearLayout layout;
+        private final int newsColor, businessColor, environmentColor;
 
         // constructor for ViewHolder.
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
-            // todo set up onClickListener for the view
-            //setting up views
-            title=itemView.findViewById(R.id.list_item_txt_title);
-            author=itemView.findViewById(R.id.list_item_txt_author);
-            section=itemView.findViewById(R.id.list_item_txt_section);
-            datePublished=itemView.findViewById(R.id.list_item_txt_date_published);
+            Log.d(LOG_TAG, "----> ViewHolder has been instantiated");
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NewsEntity entity = mNewsList.get(getAdapterPosition());
+                    Uri uri = Uri.parse(entity.getURL());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    mContext.startActivity(intent);
+                }
+            });
+            // setting up views
+            title = itemView.findViewById(R.id.list_item_txt_title);
+            author = itemView.findViewById(R.id.list_item_txt_author);
+            section = itemView.findViewById(R.id.list_item_txt_section);
+            datePublished = itemView.findViewById(R.id.list_item_txt_date_published);
+            layout = itemView.findViewById(R.id.list_item_layout);
+            // setting up colors
+            newsColor = ContextCompat.getColor(mContext, R.color.color_news);
+            businessColor = ContextCompat.getColor(mContext, R.color.color_business);
+            environmentColor = ContextCompat.getColor(mContext, R.color.color_environment);
         }
 
         /**
@@ -143,5 +186,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         public TextView getDatePublished() {
             return datePublished;
         }
+
+        /**
+         * @return - Layout reference of List item
+         */
+        public LinearLayout getLayout() {
+            return layout;
+        }
     }
+
 }

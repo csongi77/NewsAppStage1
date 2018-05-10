@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.csongor.newsapp.guardian_api.GuardianQuery;
@@ -38,13 +37,13 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private GuardianQuery mGuardianQuery;
     private int mPages, mCurrentPage;
     private List<NewsEntity> mNewsList;
-    private ArrayAdapter mArrayAdapter;
+    private NewsAdapter mAdapter;
     private ListView mListView;
     private TextView mMessage;
     private ContentLoadingProgressBar mProgressBar;
     private LoaderManager mLoaderManager;
     private RecyclerView mRecyclerView;
-
+    private RecyclerView.LayoutManager mLinearLayoutManager;
 
     // Default constructor
     public NewsListFragment() {
@@ -77,8 +76,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mMessage = mRootView.findViewById(R.id.news_list_txt_message);
         //mListView
         mRecyclerView = mRootView.findViewById(R.id.news_list_view);
-        LinearLayoutManager mLinearLayoutManager=new LinearLayoutManager(getContext());
-
+        mLinearLayoutManager=new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
 
         // getting arguments from Bundle
@@ -154,15 +153,15 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mPages=data.getInt(BundleKeys.BUNDLE_PAGES);
         mNewsList=data.getParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST);
         if(mNewsList!=null){
-            mArrayAdapter=new NewsAdapter(getContext(),mNewsList);
-            mListView.setAdapter(mArrayAdapter);
+            mAdapter = new NewsAdapter(mNewsList,getContext());
+            mRecyclerView.setAdapter(mAdapter);
             mProgressBar.hide();
             mMessage.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         } else {
             mProgressBar.hide();
             mMessage.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -179,7 +178,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(@NonNull Loader<Bundle> loader) {
         Log.d(LOG_TAG,"-----> onLoaderReset called");
         mProgressBar.show();
-        mListView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.GONE);
     }
 }

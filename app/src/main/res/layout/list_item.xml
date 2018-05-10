@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:id="@+id/list_item_layout"
+    android:foreground="?android:attr/selectableItemBackground"
     android:background="@color/color_neutral">
 
     <!-- the default news list item -->
@@ -14,7 +16,7 @@
         android:orientation="vertical"
         android:visibility="visible"
         android:padding="@dimen/list_item_layout_padding"
-        android:background="@color/color_environment">
+        android:background="@android:color/white">
 
         <!-- Title of Article parsed from JSON-->
         <TextView

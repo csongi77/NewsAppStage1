@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- List controller menu styles -->
+    <style name="list_controller_menu_text_style">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/list_controller_txt_size</item>
+    </style>
 </resources>

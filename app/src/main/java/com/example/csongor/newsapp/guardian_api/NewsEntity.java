@@ -1,7 +1,13 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Basic News Entity
@@ -27,12 +33,12 @@ public class NewsEntity implements ResultEntity {
         mTitle = title;
         mSection = section;
         mAuthor = author;
-        mDatePublished = datePublished;
+        mDatePublished = formatDate(datePublished);
         mURL = url;
 
     }
 
-    // Parcelable implementation
+       // Parcelable implementation
     protected NewsEntity(Parcel in) {
         mTitle = in.readString();
         mSection = in.readString();
@@ -161,6 +167,23 @@ public class NewsEntity implements ResultEntity {
         dest.writeString(mAuthor);
         dest.writeString(mDatePublished);
         dest.writeString(mURL);
+    }
+
+    /**
+     * Helper method to format parsed date into proper format
+     * @param datePublished - from parsed JSON string format yyyy-MM-ddThh:mm:ssZ
+     * @return - The return String in dd-MM-yyyy hh:mm
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String formatDate(String datePublished) {
+        //cut original string
+        String [] toCut = datePublished.split("T|Z");
+        String [] dateToCut = toCut[0].split("-");
+        StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append(dateToCut[2]+"-").append(dateToCut[1]+"-").append(dateToCut[0]+", ");
+        String [] timeToCut = toCut[1].split(":");
+        stringBuilder.append(timeToCut[0]+":"+timeToCut[1]+"Z");
+        return stringBuilder.toString();
     }
 }
 
