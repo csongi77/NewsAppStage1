@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private LoaderManager mLoaderManager;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLinearLayoutManager;
+    private LinearLayout mListController;
 
     // Default constructor
     public NewsListFragment() {
@@ -74,11 +76,13 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // assigning values to Views
         mMessage = mRootView.findViewById(R.id.news_list_txt_message);
-        //mListView
+
         mRecyclerView = mRootView.findViewById(R.id.news_list_view);
         mLinearLayoutManager=new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
+        mListController=mRootView.findViewById(R.id.list_controller_menu);
+        mListController.setVisibility(View.GONE);
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
@@ -158,6 +162,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
             mProgressBar.hide();
             mMessage.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+            if(mPages>1) mListController.setVisibility(View.VISIBLE);
         } else {
             mProgressBar.hide();
             mMessage.setVisibility(View.VISIBLE);
@@ -180,5 +185,6 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mProgressBar.show();
         mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.GONE);
+        mListController.setVisibility(View.GONE);
     }
 }

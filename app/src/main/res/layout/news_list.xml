@@ -6,11 +6,13 @@
     <!-- This is the news list container -->
 <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/o_dp"
+    android:layout_weight="1"
     android:orientation="vertical"
     android:id="@+id/news_list_view"
     android:visibility="visible"
     />
+
 <android.support.v4.widget.ContentLoadingProgressBar
     android:id="@+id/news_list_progressbar"
     android:layout_width="wrap_content"
@@ -19,10 +21,13 @@
     android:layout_gravity="center"
     android:visibility="gone"/>
 <TextView
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:id="@+id/news_list_txt_message"
     android:text="@string/news_list_txt_no_result"/>
 
+    <include layout="@layout/list_controller"
+        />
 </LinearLayout>

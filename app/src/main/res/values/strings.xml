@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">NewsApp</string>
     <string name="loremipsum45">Lorem ipsum dolor sit amet, consectetuer adip</string>
     <string name="loremipsum35">Lorem ipsum dolor sit amet, consect</string>
@@ -12,7 +12,7 @@
     <string name="list_controller_first">First</string>
     <string name="list_controller_back">Back</string>
     <string name="list_controller_hint">01</string>
-    <string name="list_controller_of_pages">/of XX</string>
+    <string name="list_controller_of_pages">/of <xliff:g id="max_page">%d</xliff:g></string>
     <string name="list_controller_next">Next</string>
     <string name="list_controller_last">Last</string>
 
