@@ -3,9 +3,11 @@ package com.example.csongor.newsapp;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,11 +15,14 @@ import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,11 +34,12 @@ import com.example.csongor.newsapp.helpers.NewsLoader;
 
 import java.util.List;
 
-public class NewsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Bundle>{
+public class NewsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Bundle> {
 
-    private static final String LOG_TAG=NewsListFragment.class.getSimpleName();
-    private static final int LOADER_ID=42;
+    private static final String LOG_TAG = NewsListFragment.class.getSimpleName();
+    private static final int LOADER_ID = 42;
 
+    private View mRootView;
     private Loader<Bundle> mLoader;
     private GuardianQuery mGuardianQuery;
     private int mPages, mCurrentPage;
@@ -46,6 +52,9 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLinearLayoutManager;
     private LinearLayout mListController;
+    private LinearLayout mBtnToFirst, mBtnBack, mBtnNext, mBtnToLast;
+    private TextView mControllerStatusText;
+    private EditText mToPageInput;
 
     // Default constructor
     public NewsListFragment() {
@@ -72,27 +81,28 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View mRootView=LayoutInflater.from(getContext()).inflate(R.layout.news_list,container,false);
+        mRootView = LayoutInflater.from(getContext()).inflate(R.layout.news_list, container, false);
 
         // assigning values to Views
         mMessage = mRootView.findViewById(R.id.news_list_txt_message);
 
         mRecyclerView = mRootView.findViewById(R.id.news_list_view);
-        mLinearLayoutManager=new LinearLayoutManager(getActivity());
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
-        mListController=mRootView.findViewById(R.id.list_controller_menu);
+        mListController = mRootView.findViewById(R.id.list_controller_menu);
         mListController.setVisibility(View.GONE);
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
-        mGuardianQuery=queryBundle.getParcelable(BundleKeys.BUNDLE_QUERY);
+        mGuardianQuery = queryBundle.getParcelable(BundleKeys.BUNDLE_QUERY);
 // todo load more pages
         // set up loaderManager
-        mLoaderManager=getLoaderManager();
-        mLoader=mLoaderManager.initLoader(LOADER_ID,null,this);
+        mLoaderManager = getLoaderManager();
+        mLoader = mLoaderManager.initLoader(LOADER_ID, null, this);
         return mRootView;
     }
+
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -106,8 +116,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
-        if(mLoader==null)
-        mLoader=new NewsLoader(getContext(),mGuardianQuery.getQueryString());
+        //  if(mLoader==null)
+        mLoader = new NewsLoader(getContext(), mGuardianQuery.getQueryString());
         return mLoader;
     }
 
@@ -153,20 +163,26 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
-        mCurrentPage=data.getInt(BundleKeys.BUNDLE_CURRENT_PAGE);
-        mPages=data.getInt(BundleKeys.BUNDLE_PAGES);
-        mNewsList=data.getParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST);
-        if(mNewsList!=null){
-            mAdapter = new NewsAdapter(mNewsList,getContext());
+        mCurrentPage = data.getInt(BundleKeys.BUNDLE_CURRENT_PAGE);
+        mPages = data.getInt(BundleKeys.BUNDLE_PAGES);
+        mNewsList = data.getParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST);
+        if (mNewsList != null) {
+            mAdapter = new NewsAdapter(mNewsList, getContext());
             mRecyclerView.setAdapter(mAdapter);
             mProgressBar.hide();
             mMessage.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            if(mPages>1) mListController.setVisibility(View.VISIBLE);
+            // if result has more than one page let's set up List controller, else make it invisible
+            if (mPages > 1) {
+                setUpControllerView();
+            } else {
+                mListController.setVisibility(View.GONE);
+            }
         } else {
             mProgressBar.hide();
             mMessage.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
+            mListController.setVisibility(View.GONE);
         }
     }
 
@@ -181,10 +197,118 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoaderReset(@NonNull Loader<Bundle> loader) {
-        Log.d(LOG_TAG,"-----> onLoaderReset called");
+        Log.d(LOG_TAG, "-----> onLoaderReset called");
         mProgressBar.show();
         mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.GONE);
         mListController.setVisibility(View.GONE);
+    }
+
+
+    /**
+     * helper method for setting up Controller View depending on current page:
+     * 1) First page -> Back and ToFirstPage buttons are inactive
+     * 2) Last page -> Next and ToLastPage buttons are inactive
+     * 3) Every other case -> every buttons are active
+     */
+    private void setUpControllerView() {
+        /**
+         *  assigning values to views (here because if there are only one result page
+         *  we don't have to make list_controller visible
+         */
+        mListController.setVisibility(View.VISIBLE);
+        mBtnToFirst = mRootView.findViewById(R.id.list_controller_first_page);
+        mBtnBack = mRootView.findViewById(R.id.list_controller_back_page);
+        mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
+        mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
+        mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
+        mToPageInput = mRootView.findViewById(R.id.list_controller_to_page_input);
+
+        // Set up "of XX" pages text in controller
+        mControllerStatusText.setText(String.format(getString(R.string.list_controller_of_pages), mPages));
+
+        // Implementing the navigate to selected page part
+        mToPageInput.setText(null);
+        mToPageInput.setHint(String.valueOf(mCurrentPage));
+
+        if(mToPageInput.hasFocus()){
+            InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
+        }
+
+        mToPageInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    navigateToPage();
+                    //mToPageInput.setCursorVisible(false);
+                    mToPageInput.clearFocus();
+                    InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(inputMethodManager.isActive()){
+                        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                    }
+                }
+                return false;
+            }
+        });
+
+        /**
+         * Setting up onClickListeners for buttons. Cliciking on them will modify the
+         * GuardianQuery object in order to download the appropriate page.
+         * We don't have to check the limits (whether is current page is the first or last) because
+         * we'll do it at next step.
+         */
+        mBtnToLast.setOnClickListener(v -> {
+            mGuardianQuery.setPage(mPages);
+            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
+        });
+        mBtnNext.setOnClickListener(v -> {
+            mGuardianQuery.setPage(++mCurrentPage);
+            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
+        });
+        mBtnToFirst.setOnClickListener(v -> {
+            mGuardianQuery.setPage(1);
+            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
+        });
+        mBtnBack.setOnClickListener(v -> {
+            mGuardianQuery.setPage(--mCurrentPage);
+            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
+        });
+        if (mCurrentPage == 1) {
+            // make appropriate buttons inactive
+            mBtnToFirst.setClickable(false);
+            mBtnToFirst.setFocusable(false);
+            mBtnBack.setClickable(false);
+            mBtnBack.setFocusable(false);
+        } else if (mCurrentPage == mPages) {
+            // this is the last page state
+            mBtnNext.setClickable(false);
+            mBtnNext.setFocusable(false);
+            mBtnToLast.setClickable(false);
+            mBtnToLast.setFocusable(false);
+        }
+    }
+
+    /**
+     *  Helper method in order to navigate to the selected page via EditText.
+     *  We check whether valid values has been set.
+     */
+    private void navigateToPage() {
+        int value = mCurrentPage;
+        // Are there any values given?
+        if (!mToPageInput.getEditableText().toString().equalsIgnoreCase(""))
+            value = Integer.parseInt(mToPageInput.getEditableText().toString());
+        // if yes, check whether is it valid: startPage<= given number <=maximumPage are valid
+        if (value != mCurrentPage) {
+            if (value < 1) {
+                mGuardianQuery.setPage(1);
+            } else if (value > mPages) {
+                mGuardianQuery.setPage(mPages);
+            } else {
+                mGuardianQuery.setPage(value);
+            }
+            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
+        }
     }
 }

@@ -6,7 +6,8 @@ downloaded at once, this menu helps to download more pages -->
     android:layout_height="56dp"
     android:background="@android:color/black"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:focusable="false">
 
     <!-- To first page button -->
     <LinearLayout
@@ -16,7 +17,6 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true"
         android:background="@drawable/background_ripple">
 
         <ImageView
@@ -39,7 +39,6 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
@@ -71,14 +70,16 @@ downloaded at once, this menu helps to download more pages -->
             android:gravity="end"
             android:textSize="@dimen/list_controller_txt_size"
             android:inputType="number"
-            android:maxLength="2"/>
+            android:maxLength="2"
+            android:id="@+id/list_controller_to_page_input" />
 
         <TextView
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="6dp"
-            android:text="@string/list_controller_of_pages" />
+            android:text="@string/list_controller_of_pages"
+            android:id="@+id/list_controller_to_page_message"/>
     </LinearLayout>
 
     <!-- To next page button -->
@@ -89,7 +90,6 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
@@ -112,7 +112,6 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
