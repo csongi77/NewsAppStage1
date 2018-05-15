@@ -1,7 +1,9 @@
 package com.example.csongor.newsapp;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +40,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final String LOG_TAG = NewsListFragment.class.getSimpleName();
     private static final int LOADER_ID = 42;
+    private static final String BUNDLE_ENTERED_VALUE = "BUNDLE_ENTERED_VALUE";
+    private static final String BUNDLE_IS_SOFTKEYBOARD_ACTIVE = "BUNDLE_IS_SOFTKEYBOARD_ACTIVE";
 
     private View mRootView;
     private Loader<Bundle> mLoader;
@@ -55,10 +59,15 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private LinearLayout mBtnToFirst, mBtnBack, mBtnNext, mBtnToLast;
     private TextView mControllerStatusText;
     private EditText mToPageInput;
+    private int mEnteredPageNumber;
+    private Bundle mSavedInstanceState;
+    private boolean mIsSoftkeyboardActive;
+    private InputMethodManager mInputMethodManager;
 
     // Default constructor
     public NewsListFragment() {
     }
+
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -92,15 +101,53 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
         mListController = mRootView.findViewById(R.id.list_controller_menu);
         mListController.setVisibility(View.GONE);
+        mToPageInput = mRootView.findViewById(R.id.list_controller_to_page_input);
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
         mGuardianQuery = queryBundle.getParcelable(BundleKeys.BUNDLE_QUERY);
-// todo load more pages
+
+        if (savedInstanceState != null) mSavedInstanceState = savedInstanceState;
+
+        mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         // set up loaderManager
         mLoaderManager = getLoaderManager();
         mLoader = mLoaderManager.initLoader(LOADER_ID, null, this);
         return mRootView;
+    }
+
+
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it
+     * can later be reconstructed in a new instance of its process is
+     * restarted.  If a new instance of the fragment later needs to be
+     * created, the data you place in the Bundle here will be available
+     * in the Bundle given to {@link #onCreate(Bundle)},
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}, and
+     * {@link #onActivityCreated(Bundle)}.
+     * <p>
+     * <p>This corresponds to {@link Activity#onSaveInstanceState(Bundle)
+     * Activity.onSaveInstanceState(Bundle)} and most of the discussion there
+     * applies here as well.  Note however: <em>this method may be called
+     * at any time before {@link #onDestroy()}</em>.  There are many situations
+     * where a fragment may be mostly torn down (such as when placed on the
+     * back stack with no UI showing), but its state will not be saved until
+     * its owning activity actually needs to save its state.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (mInputMethodManager.isAcceptingText()) mIsSoftkeyboardActive = true;
+        outState.putBoolean(BUNDLE_IS_SOFTKEYBOARD_ACTIVE, mIsSoftkeyboardActive);
+        if (!mToPageInput.getEditableText().toString().equalsIgnoreCase("")) {
+            mEnteredPageNumber = Integer.parseInt(mToPageInput.getText().toString());
+        } else {
+            mEnteredPageNumber = 0;
+        }
+        outState.putInt(BUNDLE_ENTERED_VALUE, mEnteredPageNumber);
+        Log.d(LOG_TAG, "--------> Saving to state: " + mEnteredPageNumber + ", mIsSoftKeyboard active: " + mIsSoftkeyboardActive);
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -121,43 +168,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         return mLoader;
     }
 
-    /**
-     * Called when a previously created loader has finished its load.  Note
-     * that normally an application is <em>not</em> allowed to commit fragment
-     * transactions while in this call, since it can happen after an
-     * activity's state is saved.  See {@link FragmentManager#beginTransaction()
-     * FragmentManager.openTransaction()} for further discussion on this.
-     * <p>
-     * <p>This function is guaranteed to be called prior to the release of
-     * the last data that was supplied for this Loader.  At this point
-     * you should remove all use of the old data (since it will be released
-     * soon), but should not do your own release of the data since its Loader
-     * owns it and will take care of that.  The Loader will take care of
-     * management of its data so you don't have to.  In particular:
-     * <p>
-     * <ul>
-     * <li> <p>The Loader will monitor for changes to the data, and report
-     * them to you through new calls here.  You should not monitor the
-     * data yourself.  For example, if the data is a {@link Cursor}
-     * and you place it in a {@link CursorAdapter}, use
-     * the {@link CursorAdapter#CursorAdapter(Context, * Cursor, int)} constructor <em>without</em> passing
-     * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
-     * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
-     * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
-     * from doing its own observing of the Cursor, which is not needed since
-     * when a change happens you will get a new Cursor throw another call
-     * here.
-     * <li> The Loader will release the data once it knows the application
-     * is no longer using it.  For example, if the data is
-     * a {@link Cursor} from a {@link CursorLoader},
-     * you should not call close() on it yourself.  If the Cursor is being placed in a
-     * {@link CursorAdapter}, you should use the
-     * {@link CursorAdapter#swapCursor(Cursor)}
-     * method so that the old Cursor is not closed.
-     * </ul>
-     * <p>
-     * <p>This will always be called from the process's main thread.
-     *
+
+    /*
      * @param loader The Loader that has finished.
      * @param data   The data generated by the Loader.
      */
@@ -169,6 +181,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         if (mNewsList != null) {
             mAdapter = new NewsAdapter(mNewsList, getContext());
             mRecyclerView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
             mProgressBar.hide();
             mMessage.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
@@ -222,36 +235,71 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
         mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
         mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
-        mToPageInput = mRootView.findViewById(R.id.list_controller_to_page_input);
 
         // Set up "of XX" pages text in controller
         mControllerStatusText.setText(String.format(getString(R.string.list_controller_of_pages), mPages));
 
         // Implementing the navigate to selected page part
-        mToPageInput.setText(null);
         mToPageInput.setHint(String.valueOf(mCurrentPage));
 
-        if(mToPageInput.hasFocus()){
-            InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
-        }
-
+        // setup listener for Edit text. When user finishes typing pressing "done" it starts to download selected page
         mToPageInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    mIsSoftkeyboardActive = false;
                     navigateToPage();
-                    //mToPageInput.setCursorVisible(false);
+                    mToPageInput.setText(null);
                     mToPageInput.clearFocus();
-                    InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if(inputMethodManager.isActive()){
-                        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                    if (mInputMethodManager.isActive()) {
+                        mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     }
                 }
                 return false;
             }
         });
+
+        /**
+         * checking whether the softKeyboard should be opened. For instance user clicks on EditText and
+         * then rotates the device, we save the state of EditText value and the status of Keyboard.
+         * If it was opened, we open it again.
+         */
+        if (mSavedInstanceState != null) {
+            int savedInputValue = 0;
+            try {
+                savedInputValue = mSavedInstanceState.getInt(BUNDLE_ENTERED_VALUE);
+                mIsSoftkeyboardActive = mSavedInstanceState.getBoolean(BUNDLE_IS_SOFTKEYBOARD_ACTIVE);
+                Log.d(LOG_TAG, "------> retrieving states after config change. Entered value: " +
+                        savedInputValue + ", mIsSoftKeyboardActive: " + mIsSoftkeyboardActive);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            if (mIsSoftkeyboardActive) {
+                if (savedInputValue != 0) {
+                    mEnteredPageNumber = savedInputValue;
+                    mToPageInput.setText(String.valueOf(mEnteredPageNumber));
+                }
+                if (!mInputMethodManager.isAcceptingText()) {
+                    Log.d(LOG_TAG,"-------> requesting focus and showing input....");
+                    InputMethodManager imm=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mToPageInput.requestFocus();
+                    imm.showSoftInput(mToPageInput, InputMethodManager.SHOW_FORCED);
+                }
+            }
+
+        }
+
+
+     /*   mToPageInput.setOnClickListener(v -> {
+            if (!mIsSoftkeyboardActive) {
+                mToPageInput.requestFocus();
+                mInputMethodManager.showSoftInput(mToPageInput, InputMethodManager.SHOW_IMPLICIT);
+                mIsSoftkeyboardActive = true;
+            } else {
+                mToPageInput.requestFocus();
+                mInputMethodManager.hideSoftInputFromInputMethod(mToPageInput.getWindowToken(),InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        });*/
 
         /**
          * Setting up onClickListeners for buttons. Cliciking on them will modify the
@@ -275,6 +323,10 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
             mGuardianQuery.setPage(--mCurrentPage);
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
+
+        /**
+         * Checking state of current page. In first and last page state we disable the buttons
+         */
         if (mCurrentPage == 1) {
             // make appropriate buttons inactive
             mBtnToFirst.setClickable(false);
@@ -291,8 +343,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     /**
-     *  Helper method in order to navigate to the selected page via EditText.
-     *  We check whether valid values has been set.
+     * Helper method in order to navigate to the selected page via EditText.
+     * We check whether valid values has been set.
      */
     private void navigateToPage() {
         int value = mCurrentPage;

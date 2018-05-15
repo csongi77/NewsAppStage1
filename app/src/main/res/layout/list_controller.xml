@@ -17,6 +17,7 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
+        android:focusable="true"
         android:background="@drawable/background_ripple">
 
         <ImageView
@@ -39,6 +40,7 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
+        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
@@ -68,9 +70,11 @@ downloaded at once, this menu helps to download more pages -->
             android:hint="@string/list_controller_hint"
             android:padding="6dp"
             android:gravity="end"
-            android:textSize="@dimen/list_controller_txt_size"
             android:inputType="number"
+            android:textSize="@dimen/list_controller_txt_size"
             android:maxLength="2"
+            android:clickable="true"
+            android:focusable="true"
             android:id="@+id/list_controller_to_page_input" />
 
         <TextView
@@ -90,6 +94,7 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
+        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
@@ -112,6 +117,7 @@ downloaded at once, this menu helps to download more pages -->
         android:gravity="center"
         android:orientation="vertical"
         android:clickable="true"
+        android:focusable="true"
         android:background="@drawable/background_ripple">
 
     <ImageView
