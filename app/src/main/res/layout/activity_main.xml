@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_activity_placeholder"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
 <!-- This is the main container for all layouts yet. Later it can be extended by a drawer, or add
 Fragments to this -->
 
+    <include layout="@layout/list_controller"
+        />
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

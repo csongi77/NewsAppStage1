@@ -102,6 +102,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_navigate_next"
-        android:paddingLeft="@dimen/list_item_layout_padding"/>
+        android:src="@drawable/ic_navigate_next_black"
+        android:padding="@dimen/list_item_layout_padding"/>
 </LinearLayout>

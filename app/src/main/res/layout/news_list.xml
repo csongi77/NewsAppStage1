@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     style="@style/Widget.AppCompat.ProgressBar"
     android:layout_gravity="center"
-    android:visibility="gone"/>
+    android:visibility="visible"/>
 <TextView
     android:visibility="gone"
     android:layout_width="match_parent"
@@ -30,6 +30,4 @@
     android:id="@+id/news_list_txt_message"
     android:text="@string/news_list_txt_no_result"/>
 
-    <include layout="@layout/list_controller"
-        />
 </LinearLayout>
