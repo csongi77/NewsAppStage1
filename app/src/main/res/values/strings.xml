@@ -2,19 +2,27 @@
     <string name="app_name">NewsApp</string>
     <string name="loremipsum45">Lorem ipsum dolor sit amet, consectetuer adip</string>
     <string name="loremipsum35">Lorem ipsum dolor sit amet, consect</string>
+
+    <!-- Entity strings -->
     <string name="list_item_txt_author_static">Author:</string>
     <string name="section">Section</string>
     <string name="published">Published:</string>
     <string name="date_time_example">2018-04-27,13.13</string>
-    <string name="no_network_error_message">No network detected. Ensure your device is connected!</string>
-    <string name="request_method">GET</string>
-    <string name="news_list_txt_no_result">No Results found!</string>
 
+    <!-- general -->
+    <string name="request_method">GET</string>
+    <string name="news_list_btn_reload">Reload</string>
+
+    <!-- error messages -->
+    <string name="no_network_error_message">No network detected. Ensure your device is connected!</string>
+    <string name="json_parse_error_message">Error retrieving result.</string>
+    <string name="no_results_error_message">No results found. Try another search!</string>
+    <string name="connestion_error_message">Error connecting to server. Ensure your device is connected!</string>
+    <string name="news_list_txt_no_result">No Results found!</string>
 
     <!-- list controller texts -->
     <string name="list_controller_first">First</string>
     <string name="list_controller_back">Back</string>
-    <string name="list_controller_hint">01</string>
     <string name="list_controller_of_pages">Page: <xliff:g id="actual_page">%d</xliff:g>
         of <xliff:g id="max_page">%d</xliff:g></string>
     <string name="list_controller_next">Next</string>

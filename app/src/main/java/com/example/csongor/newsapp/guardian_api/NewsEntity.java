@@ -18,7 +18,6 @@ public class NewsEntity implements ResultEntity {
     private final String mAuthor;
     private final String mDatePublished;
     private final String mURL;
-    // private final long mDateLong;
 
     /**
      * Constructor of Entity

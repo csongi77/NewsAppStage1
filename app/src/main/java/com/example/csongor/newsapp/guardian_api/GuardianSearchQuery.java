@@ -13,7 +13,7 @@ public class GuardianSearchQuery implements GuardianQuery{
     private static final String QUERY_SYMBOL ="q=";
     private String mQueryString;
     // set up page size
-    private static final String PAGE_SIZE_SYMBOL="&page-size=10";
+    private static final String PAGE_SIZE_SYMBOL="&page-size=20";
 
     /**
      * Empty constructor if there are no search query.

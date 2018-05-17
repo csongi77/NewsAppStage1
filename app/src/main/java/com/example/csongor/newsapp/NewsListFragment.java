@@ -1,37 +1,27 @@
 package com.example.csongor.newsapp;
 
-import android.app.Service;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CursorAdapter;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.csongor.newsapp.guardian_api.GuardianQuery;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
+import com.example.csongor.newsapp.helpers.BundleStates;
 import com.example.csongor.newsapp.helpers.NewsAdapter;
 import com.example.csongor.newsapp.helpers.NewsLoader;
 
@@ -41,34 +31,21 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final String LOG_TAG = NewsListFragment.class.getSimpleName();
     private static final int LOADER_ID = 42;
-    private static final String BUNDLE_ENTERED_VALUE = "BUNDLE_ENTERED_VALUE";
-    private static final String BUNDLE_IS_SOFTKEYBOARD_ACTIVE = "BUNDLE_IS_SOFTKEYBOARD_ACTIVE";
-
     private View mRootView;
     private Loader<Bundle> mLoader;
     private GuardianQuery mGuardianQuery;
     private int mPages, mCurrentPage;
-    private List<NewsEntity> mNewsList;
-    private NewsAdapter mAdapter;
-    private ListView mListView;
     private TextView mMessage;
     private ContentLoadingProgressBar mProgressBar;
     private LoaderManager mLoaderManager;
     private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLinearLayoutManager;
     private LinearLayout mListController;
-    private LinearLayout mBtnToFirst, mBtnBack, mBtnNext, mBtnToLast;
-    private TextView mControllerStatusText;
-    private EditText mToPageInput;
-    private int mEnteredPageNumber;
-    private Bundle mSavedInstanceState;
-    private boolean mIsSoftkeyboardActive;
-    private InputMethodManager mInputMethodManager;
+    private List<NewsEntity> mNewsList;
+    private Button mReloadBtn;
 
     // Default constructor
     public NewsListFragment() {
     }
-
 
     @Nullable
     @Override
@@ -76,48 +53,28 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mRootView = LayoutInflater.from(getContext()).inflate(R.layout.news_list, container, false);
 
         // assigning values to Views
-        mMessage = mRootView.findViewById(R.id.news_list_txt_message);
-
         mRecyclerView = mRootView.findViewById(R.id.news_list_view);
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setVisibility(View.GONE);
         mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
-        mListController = mRootView.findViewById(R.id.news_list_container);
+        mProgressBar.show();
+        mListController = mRootView.findViewById(R.id.list_controller_menu);
+        mListController.setVisibility(View.GONE);
+        mMessage = mRootView.findViewById(R.id.news_list_txt_message);
+        mMessage.setVisibility(View.VISIBLE);
+        mReloadBtn = mRootView.findViewById(R.id.news_list_btn_reload);
+        mReloadBtn.setVisibility(View.GONE);
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
         mGuardianQuery = queryBundle.getParcelable(BundleKeys.BUNDLE_QUERY);
 
-        if (savedInstanceState != null) mSavedInstanceState = savedInstanceState;
-
-        mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         // set up loaderManager
         mLoaderManager = getLoaderManager();
         mLoader = mLoaderManager.initLoader(LOADER_ID, null, this);
         return mRootView;
     }
-
-
-
-    /**
-     *
-     * @param outState Bundle in which to place your saved state.
-     */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        if (mInputMethodManager.isAcceptingText()) mIsSoftkeyboardActive = true;
-        outState.putBoolean(BUNDLE_IS_SOFTKEYBOARD_ACTIVE, mIsSoftkeyboardActive);
-        if (!mToPageInput.getEditableText().toString().equalsIgnoreCase("")) {
-            mEnteredPageNumber = Integer.parseInt(mToPageInput.getText().toString());
-        } else {
-            mEnteredPageNumber = 0;
-        }
-        outState.putInt(BUNDLE_ENTERED_VALUE, mEnteredPageNumber);
-        Log.d(LOG_TAG, "--------> Saving to state: " + mEnteredPageNumber + ", mIsSoftKeyboard active: " + mIsSoftkeyboardActive);
-        super.onSaveInstanceState(outState);
-    }
-
-
 
     /**
      * @param id   The ID whose loader is to be created.
@@ -127,11 +84,9 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
-        //  if(mLoader==null)
         mLoader = new NewsLoader(getContext(), mGuardianQuery.getQueryString());
         return mLoader;
     }
-
 
     /**
      * @param loader The Loader that has finished.
@@ -139,37 +94,35 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
-        mCurrentPage = data.getInt(BundleKeys.BUNDLE_CURRENT_PAGE);
-        mPages = data.getInt(BundleKeys.BUNDLE_PAGES);
-        mNewsList = data.getParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST);
-        if (mNewsList != null) {
-            mAdapter = new NewsAdapter(mNewsList, getContext());
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-            mProgressBar.hide();
-            mMessage.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            // if result has more than one page let's set up List controller, else make it invisible
-            if (mPages > 1) {
-                setUpControllerView();
-            } else {
-                mListController.setVisibility(View.GONE);
-            }
-        } else {
-            mProgressBar.hide();
-            mMessage.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-            mListController.setVisibility(View.GONE);
+
+        // checking result status first because it always exists
+        @BundleStates int mResult;
+        mResult = data.getInt(BundleKeys.BUNDLE_STATUS);
+        Log.d(LOG_TAG, "mReturnedResult=" + mResult);
+        // calling helper methods depending on result.
+        switch (mResult) {
+            case BundleStates.CONNECTION_ERROR:
+                mMessage.setText(getText(R.string.connestion_error_message));
+                setupErrorView();
+                break;
+            case BundleStates.JSON_PARSE_ERROR:
+                mMessage.setText(getText(R.string.json_parse_error_message));
+                setupErrorView();
+                break;
+            case BundleStates.NO_RESULTS:
+                mMessage.setText(getText(R.string.no_results_error_message));
+                setupErrorView();
+                break;
+            default:
+                // getting return values since it's sure there is at least 1 result which can be displayed
+                mCurrentPage = data.getInt(BundleKeys.BUNDLE_CURRENT_PAGE);
+                mPages = data.getInt(BundleKeys.BUNDLE_PAGES);
+                mNewsList = data.getParcelableArrayList(BundleKeys.BUNDLE_RESULT_LIST);
+                setupResultView();
         }
     }
 
     /**
-     * Called when a previously created loader is being reset, and thus
-     * making its data unavailable.  The application should at this point
-     * remove any references it has to the Loader's data.
-     * <p>
-     * <p>This will always be called from the process's main thread.
-     *
      * @param loader The Loader that is being reset.
      */
     @Override
@@ -181,6 +134,41 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mListController.setVisibility(View.GONE);
     }
 
+    /**
+     * Helper method for setting up result list and display them
+     */
+    private void setupResultView() {
+
+        NewsAdapter mAdapter = new NewsAdapter(mNewsList, getContext());
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+        mProgressBar.hide();
+        mMessage.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        // if result has more than one page let's set up List controller, else make it invisible
+        if (mPages > 1) {
+            setUpControllerView();
+        } else {
+            mListController.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Helper method for showing error messages which were set up at onLoadFinished callback
+     */
+    private void setupErrorView() {
+        mProgressBar.hide();
+        mReloadBtn.setOnClickListener(v -> {
+            mLoaderManager.restartLoader(LOADER_ID, null, this);
+            mProgressBar.show();
+            mReloadBtn.setVisibility(View.GONE);
+        });
+        mReloadBtn.setVisibility(View.VISIBLE);
+        mMessage.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+        mListController.setVisibility(View.GONE);
+    }
 
     /**
      * helper method for setting up Controller View depending on current page:
@@ -189,16 +177,35 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      * 3) Every other case -> every buttons are active
      */
     private void setUpControllerView() {
+
         /**
          *  assigning values to views (here because if there are only one result page
          *  we don't have to make list_controller visible
          */
         mListController.setVisibility(View.VISIBLE);
-        mBtnToFirst = mRootView.findViewById(R.id.list_controller_first_page);
-        mBtnBack = mRootView.findViewById(R.id.list_controller_back_page);
-        mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
-        mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
-        mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
+        LinearLayout mBtnToFirst = mRootView.findViewById(R.id.list_controller_first_page);
+        LinearLayout mBtnBack = mRootView.findViewById(R.id.list_controller_back_page);
+        LinearLayout mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
+        LinearLayout mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
+        TextView mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
+        ImageView mImageToFirst = mRootView.findViewById(R.id.ic_first_page);
+        ImageView mImageBack = mRootView.findViewById(R.id.ic_previous_page);
+        ImageView mImageNext = mRootView.findViewById(R.id.ic_next_page);
+        ImageView mImageToLast = mRootView.findViewById(R.id.ic_last_page);
+        TextView mTxtToFirst = mRootView.findViewById(R.id.list_controller_txt_first_page);
+        TextView mTxtBack = mRootView.findViewById(R.id.list_controller_txt_back);
+        TextView mTxtNext = mRootView.findViewById(R.id.list_controller_txt_next);
+        TextView mTxtToLast = mRootView.findViewById(R.id.list_controller_txt_last_page);
+
+        // Set up default text and icon colors
+        mImageToFirst.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_first_page));
+        mTxtToFirst.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        mImageBack.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_navigate_before));
+        mTxtBack.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        mImageNext.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_navigate_next));
+        mTxtNext.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        mImageToLast.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_last_page));
+        mTxtToLast.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
 
         // Set up "of XX" pages text in controller
         mControllerStatusText.setText(String.format(getString(R.string.list_controller_of_pages), mCurrentPage, mPages));
@@ -228,19 +235,30 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
         /**
          * Checking state of current page. In first and last page state we disable the buttons
+         * and set up inactive colors for them.
          */
         if (mCurrentPage == 1) {
+
             // make appropriate buttons inactive
             mBtnToFirst.setClickable(false);
             mBtnToFirst.setFocusable(false);
+            mImageToFirst.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_first_page_inactive));
+            mTxtToFirst.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_grey));
             mBtnBack.setClickable(false);
             mBtnBack.setFocusable(false);
+            mImageBack.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_navigate_before_inactive));
+            mTxtBack.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_grey));
+
         } else if (mCurrentPage == mPages) {
             // this is the last page state
             mBtnNext.setClickable(false);
             mBtnNext.setFocusable(false);
+            mImageNext.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_navigate_next_inactive));
+            mTxtNext.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_grey));
             mBtnToLast.setClickable(false);
             mBtnToLast.setFocusable(false);
+            mImageToLast.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_last_page_inactive));
+            mTxtToLast.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_grey));
         }
     }
 

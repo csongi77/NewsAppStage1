@@ -94,7 +94,7 @@ downloaded at once, this menu helps to download more pages -->
             android:src="@drawable/ic_navigate_next" />
 
         <TextView
-            android:id="@+id/list_controller_next_txt"
+            android:id="@+id/list_controller_txt_next"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,7 +119,7 @@ downloaded at once, this menu helps to download more pages -->
             android:src="@drawable/ic_last_page" />
 
         <TextView
-            android:id="@+id/list_controller_last_page_txt"
+            android:id="@+id/list_controller_txt_last_page"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

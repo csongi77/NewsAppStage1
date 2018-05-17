@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/news_list_container"
-    android:focusable="false">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <!-- This is the news list container -->
-<android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/o_dp"
-    android:layout_weight="1"
-    android:orientation="vertical"
-    android:id="@+id/news_list_view"
-    android:visibility="gone"
-    />
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/news_list_progressbar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="visible" />
 
-<android.support.v4.widget.ContentLoadingProgressBar
-    android:id="@+id/news_list_progressbar"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    style="@style/Widget.AppCompat.ProgressBar"
-    android:layout_gravity="center"
-    android:visibility="visible"/>
-<TextView
-    android:visibility="gone"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:id="@+id/news_list_txt_message"
-    android:text="@string/news_list_txt_no_result"/>
+    <TextView
+        android:id="@+id/news_list_txt_message"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/news_list_txt_no_result"
+        android:visibility="gone" />
 
-    <include layout="@layout/list_controller"
-        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/news_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/o_dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/news_list_btn_reload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/news_list_btn_reload"/>
+
+    <include layout="@layout/list_controller" />
 </LinearLayout>
