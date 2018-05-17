@@ -5,22 +5,23 @@ downloaded at once, this menu helps to download more pages -->
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:background="@android:color/black"
+    android:focusable="false"
     android:gravity="center"
-    android:orientation="horizontal"
-    android:focusable="false">
+    android:orientation="horizontal">
 
     <!-- To first page button -->
     <LinearLayout
         android:id="@+id/list_controller_first_page"
         android:layout_width="@dimen/list_controller_menu_item_layout_width"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:background="@drawable/background_ripple"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/background_ripple">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/ic_first_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_first_page" />
@@ -37,13 +38,14 @@ downloaded at once, this menu helps to download more pages -->
         android:id="@+id/list_controller_back_page"
         android:layout_width="@dimen/list_controller_menu_item_layout_width"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:background="@drawable/background_ripple"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/background_ripple">
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <ImageView
+        <ImageView
+            android:id="@+id/ic_previous_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_navigate_before" />
@@ -64,26 +66,26 @@ downloaded at once, this menu helps to download more pages -->
         android:padding="6dp">
 
         <EditText
+            android:id="@+id/list_controller_to_page_input"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:hint="@string/list_controller_hint"
-            android:padding="6dp"
-            android:gravity="end"
-            android:inputType="number"
-            android:textSize="@dimen/list_controller_txt_size"
-            android:maxLength="2"
             android:clickable="true"
             android:focusable="true"
-            android:id="@+id/list_controller_to_page_input" />
+            android:gravity="end"
+            android:hint="@string/list_controller_hint"
+            android:inputType="number"
+            android:maxLength="2"
+            android:padding="6dp"
+            android:textSize="@dimen/list_controller_txt_size" />
 
         <TextView
+            android:id="@+id/list_controller_to_page_message"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="6dp"
-            android:text="@string/list_controller_of_pages"
-            android:id="@+id/list_controller_to_page_message"/>
+            android:text="@string/list_controller_of_pages" />
     </LinearLayout>
 
     <!-- To next page button -->
@@ -91,13 +93,14 @@ downloaded at once, this menu helps to download more pages -->
         android:id="@+id/list_controller_next_page"
         android:layout_width="@dimen/list_controller_menu_item_layout_width"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:background="@drawable/background_ripple"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/background_ripple">
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <ImageView
+        <ImageView
+            android:id="@+id/id_next_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_navigate_next" />
@@ -114,13 +117,14 @@ downloaded at once, this menu helps to download more pages -->
         android:id="@+id/list_controller_last_page"
         android:layout_width="@dimen/list_controller_menu_item_layout_width"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:background="@drawable/background_ripple"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/background_ripple">
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <ImageView
+        <ImageView
+            android:id="@+id/ic_last_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_last_page" />
