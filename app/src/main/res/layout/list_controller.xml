@@ -27,6 +27,7 @@ downloaded at once, this menu helps to download more pages -->
             android:src="@drawable/ic_first_page" />
 
         <TextView
+            android:id="@+id/list_controller_txt_first_page"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,6 +52,7 @@ downloaded at once, this menu helps to download more pages -->
             android:src="@drawable/ic_navigate_before" />
 
         <TextView
+            android:id="@+id/list_controller_txt_back"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,12 +102,13 @@ downloaded at once, this menu helps to download more pages -->
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/id_next_page"
+            android:id="@+id/ic_next_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_navigate_next" />
 
         <TextView
+            android:id="@+id/list_controller_next_txt"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -130,6 +133,7 @@ downloaded at once, this menu helps to download more pages -->
             android:src="@drawable/ic_last_page" />
 
         <TextView
+            android:id="@+id/list_controller_last_page_txt"
             style="@style/list_controller_menu_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
