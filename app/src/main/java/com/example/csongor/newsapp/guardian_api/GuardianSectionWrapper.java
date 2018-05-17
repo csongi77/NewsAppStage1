@@ -60,10 +60,12 @@ public class GuardianSectionWrapper extends GuardianQueryAbstractWrapper {
         // put base query string into StringBuilder object -> "&section="
         StringBuilder builder=new StringBuilder(SECTION_SYMBOL);
         // getting Iterator of section list
+
         Iterator<String> iterator=mSections.iterator();
         while (iterator.hasNext()){
             // add section element to query string ->"news"
             builder.append(iterator.next());
+
             // if there are more elements in list, append "|" symbol as it is required by Guardian API
             if(iterator.hasNext())builder.append("|");
         }

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Basic News Entity
  */
-public class NewsEntity implements ResultEntity {
+public class NewsEntity implements Parcelable{
     private final String mTitle;
     private final String mSection;
     private final String mAuthor;
@@ -173,7 +173,6 @@ public class NewsEntity implements ResultEntity {
      * @param datePublished - from parsed JSON string format yyyy-MM-ddThh:mm:ssZ
      * @return - The return String in dd-MM-yyyy hh:mm
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private String formatDate(String datePublished) {
         //cut original string
         String [] toCut = datePublished.split("T|Z");

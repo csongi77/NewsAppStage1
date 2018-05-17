@@ -48,6 +48,16 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
         mUrl = queryUrl;
     }
 
+    /**
+     * overriding default loader behaviour
+     * @return - result Bundle.
+     * It contains:
+     * 1) Result code - compulsory, always exists
+     * Optionally:
+     * 2) result list of NewsEntities
+     * 3) number of result pages
+     * 4) number of total number of pages
+     */
     @Nullable
     @Override
     public Bundle loadInBackground() {
