@@ -13,5 +13,5 @@ import static com.example.csongor.newsapp.guardian_api.ApiKey.API_KEY;
 @StringDef(API_KEY)
 @Retention(RetentionPolicy.SOURCE)
 public @interface ApiKey {
-    String API_KEY="&api-key=7784ddf2-5e12-4126-b8d1-878533f4dc01";
+    String API_KEY = "&api-key=7784ddf2-5e12-4126-b8d1-878533f4dc01";
 }

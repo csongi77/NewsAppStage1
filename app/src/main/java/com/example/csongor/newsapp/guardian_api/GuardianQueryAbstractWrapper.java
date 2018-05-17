@@ -1,23 +1,21 @@
 package com.example.csongor.newsapp.guardian_api;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Abstract Query Wrapper for components (date modifier, section modifier etc.)
  */
 public abstract class GuardianQueryAbstractWrapper implements GuardianQuery {
 
+    // the wrapped object
     private GuardianQuery mWrappedQuery;
-
 
     /**
      * Basic constructor
+     *
      * @param wrappedQuery - the Base Query class. At the moment (News App stage 1) the only
      *                     possible argument can be a GuardianSearchQuery object.
      */
-    protected GuardianQueryAbstractWrapper(GuardianQuery wrappedQuery){
-        this.mWrappedQuery=wrappedQuery;
+    protected GuardianQueryAbstractWrapper(GuardianQuery wrappedQuery) {
+        this.mWrappedQuery = wrappedQuery;
     }
 
     // requred by Parcelable implementation

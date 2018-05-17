@@ -1,8 +1,6 @@
 package com.example.csongor.newsapp.helpers;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +8,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.example.csongor.newsapp.BundleKeys;
-import com.example.csongor.newsapp.guardian_api.GuardianQuery;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
 
 import org.json.JSONArray;
@@ -25,8 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class NewsLoader extends AsyncTaskLoader<Bundle> {
 
@@ -50,6 +45,7 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
 
     /**
      * overriding default loader behaviour
+     *
      * @return - result Bundle.
      * It contains:
      * 1) Result code - compulsory, always exists
@@ -198,6 +194,7 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
                 return null;
             }
         }
+
         // checking are there any results. If there is at least 1 result set mResult value to 0;
         // for more info see @BundleStates
         if (newsListToReturn.isEmpty()) {

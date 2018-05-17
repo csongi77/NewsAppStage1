@@ -1,24 +1,17 @@
 package com.example.csongor.newsapp.guardian_api;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Basic News Entity
  */
-public class NewsEntity implements Parcelable{
+public class NewsEntity implements Parcelable {
     private final String mTitle;
     private final String mSection;
     private final String mAuthor;
     private final String mDatePublished;
     private final String mURL;
-
     /**
      * Constructor of Entity
      *
@@ -37,15 +30,7 @@ public class NewsEntity implements Parcelable{
 
     }
 
-       // Parcelable implementation
-    protected NewsEntity(Parcel in) {
-        mTitle = in.readString();
-        mSection = in.readString();
-        mAuthor = in.readString();
-        mDatePublished = in.readString();
-        mURL = in.readString();
-    }
-
+    // Parcelable implementation
     public static final Creator<NewsEntity> CREATOR = new Creator<NewsEntity>() {
         @Override
         public NewsEntity createFromParcel(Parcel in) {
@@ -57,6 +42,14 @@ public class NewsEntity implements Parcelable{
             return new NewsEntity[size];
         }
     };
+
+    protected NewsEntity(Parcel in) {
+        mTitle = in.readString();
+        mSection = in.readString();
+        mAuthor = in.readString();
+        mDatePublished = in.readString();
+        mURL = in.readString();
+    }
 
     /**
      * getter for title
@@ -103,6 +96,7 @@ public class NewsEntity implements Parcelable{
     public String getURL() {
         return mURL;
     }
+
     /**
      * Overriding equals in order to let these object comparable
      *
@@ -170,17 +164,18 @@ public class NewsEntity implements Parcelable{
 
     /**
      * Helper method to format parsed date into proper format
+     *
      * @param datePublished - from parsed JSON string format yyyy-MM-ddThh:mm:ssZ
      * @return - The return String in dd-MM-yyyy hh:mm
      */
     private String formatDate(String datePublished) {
         //cut original string
-        String [] toCut = datePublished.split("T|Z");
-        String [] dateToCut = toCut[0].split("-");
-        StringBuilder stringBuilder=new StringBuilder();
-        stringBuilder.append(dateToCut[2]+"-").append(dateToCut[1]+"-").append(dateToCut[0]+", ");
-        String [] timeToCut = toCut[1].split(":");
-        stringBuilder.append(timeToCut[0]+":"+timeToCut[1]+"Z");
+        String[] toCut = datePublished.split("T|Z");
+        String[] dateToCut = toCut[0].split("-");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(dateToCut[2] + "-").append(dateToCut[1] + "-").append(dateToCut[0] + ", ");
+        String[] timeToCut = toCut[1].split(":");
+        stringBuilder.append(timeToCut[0] + ":" + timeToCut[1] + "Z");
         return stringBuilder.toString();
     }
 }

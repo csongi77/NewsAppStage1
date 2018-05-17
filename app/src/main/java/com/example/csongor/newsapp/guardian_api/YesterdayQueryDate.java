@@ -1,9 +1,7 @@
 package com.example.csongor.newsapp.guardian_api;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,17 +9,14 @@ import java.util.Date;
  * QueryDate class implementation for querying news from yesterday and today
  */
 public class YesterdayQueryDate implements QueryDate {
+
     private String mCurrentTime;
-
     // Default constructor for calculating yesterday
-    public YesterdayQueryDate() {
-        mCurrentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()-(24*60*60*1000)));
-    }
 
-    // parcelable implementation
-    protected YesterdayQueryDate(Parcel in) {
-        mCurrentTime = in.readString();
+    public YesterdayQueryDate() {
+        mCurrentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)));
     }
+    // parcelable implementation
 
     public static final Creator<YesterdayQueryDate> CREATOR = new Creator<YesterdayQueryDate>() {
         @Override
@@ -34,14 +29,18 @@ public class YesterdayQueryDate implements QueryDate {
             return new YesterdayQueryDate[size];
         }
     };
+    protected YesterdayQueryDate(Parcel in) {
+        mCurrentTime = in.readString();
+    }
 
     /**
      * This string will be returned to GuardianDateWrapper
+     *
      * @return -
      */
     @Override
     public String getDateString() {
-        return "&from-date="+mCurrentTime;
+        return "&from-date=" + mCurrentTime;
     }
 
     /**

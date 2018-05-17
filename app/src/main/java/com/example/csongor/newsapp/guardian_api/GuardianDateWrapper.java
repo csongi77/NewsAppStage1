@@ -3,23 +3,12 @@ package com.example.csongor.newsapp.guardian_api;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Date wrapper for basic GuardianSearchQuery. It extends the base query string with Date.
+ */
 public class GuardianDateWrapper extends GuardianQueryAbstractWrapper implements Parcelable {
 
-    private QueryDate mDate;
-
-    /**
-     * @param wrappedQuery - the Base Query class. At the moment (News App stage 1) the only
-     *                     possible argument can be a GuardianSearchQuery object.
-     */
-    public GuardianDateWrapper(GuardianQuery wrappedQuery, QueryDate mDate) {
-        super(wrappedQuery);
-        this.mDate = mDate;
-    }
-
-    protected GuardianDateWrapper(Parcel in) {
-        mDate = in.readParcelable(QueryDate.class.getClassLoader());
-    }
-
+    // parcelable implementation
     public static final Creator<GuardianDateWrapper> CREATOR = new Creator<GuardianDateWrapper>() {
         @Override
         public GuardianDateWrapper createFromParcel(Parcel in) {
@@ -31,14 +20,34 @@ public class GuardianDateWrapper extends GuardianQueryAbstractWrapper implements
             return new GuardianDateWrapper[size];
         }
     };
+    /**
+     * QueryDate object. With this strategy this class can return different date query string
+     * based on search (news from yesterday or from-to etc.)
+     */
+    private QueryDate mDate;
+
+    /**
+     * @param wrappedQuery - the Base Query class constructor. At the moment (News App stage 1)
+     *                     this object accepts Query which will be wrapped with this object and
+     *                     a QueryDate strategy.
+     */
+    public GuardianDateWrapper(GuardianQuery wrappedQuery, QueryDate mDate) {
+        super(wrappedQuery);
+        this.mDate = mDate;
+    }
+
+    protected GuardianDateWrapper(Parcel in) {
+        mDate = in.readParcelable(QueryDate.class.getClassLoader());
+    }
 
     /**
      * This is the complete query String which can be parsed into URL.
+     *
      * @return the query String for Guardian REST URL.
      */
     @Override
     public String getQueryString() {
-        return super.getQueryString()+mDate.getDateString();
+        return super.getQueryString() + mDate.getDateString();
     }
 
     /**

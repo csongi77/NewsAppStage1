@@ -2,21 +2,17 @@ package com.example.csongor.newsapp;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.ListView;
 
 import com.example.csongor.newsapp.guardian_api.GuardianDateWrapper;
 import com.example.csongor.newsapp.guardian_api.GuardianQuery;
 import com.example.csongor.newsapp.guardian_api.GuardianSearchQuery;
 import com.example.csongor.newsapp.guardian_api.GuardianSectionWrapper;
-import com.example.csongor.newsapp.guardian_api.NewsEntity;
 import com.example.csongor.newsapp.guardian_api.YesterdayQueryDate;
 
 import java.util.ArrayList;

@@ -13,6 +13,7 @@ import android.os.Parcelable;
 public interface QueryDate extends Parcelable {
     /**
      * The string has to returned to GuardianDateWrapper depending on Date strategy
+     *
      * @return - String to wrapper, starting with "&date..."
      */
     String getDateString();
