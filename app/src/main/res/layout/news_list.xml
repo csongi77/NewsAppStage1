@@ -17,8 +17,8 @@
     <TextView
         android:id="@+id/news_list_txt_message"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="@dimen/o_dp"
+        android:layout_weight="@dimen/layout_weight_one"
         android:gravity="center"
         android:text="@string/news_list_txt_no_result"
         android:visibility="gone" />
@@ -27,7 +27,7 @@
         android:id="@+id/news_list_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/o_dp"
-        android:layout_weight="1"
+        android:layout_weight="@dimen/layout_weight_one"
         android:orientation="vertical"
         android:visibility="gone" />
 
@@ -35,7 +35,7 @@
         android:id="@+id/news_list_btn_reload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/news_list_btn_reload"/>
+        android:text="@string/news_list_btn_reload" />
 
     <include layout="@layout/list_controller" />
 </LinearLayout>
