@@ -11,7 +11,6 @@
 <!-- This is the main container for all layouts yet. Later it can be extended by a drawer, or add
 Fragments to this -->
 
-    <include layout="@layout/list_controller"
-        />
+
 
 </LinearLayout>

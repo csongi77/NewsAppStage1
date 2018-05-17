@@ -12,7 +12,7 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:id="@+id/news_list_view"
-    android:visibility="visible"
+    android:visibility="gone"
     />
 
 <android.support.v4.widget.ContentLoadingProgressBar
@@ -30,4 +30,6 @@
     android:id="@+id/news_list_txt_message"
     android:text="@string/news_list_txt_no_result"/>
 
+    <include layout="@layout/list_controller"
+        />
 </LinearLayout>
