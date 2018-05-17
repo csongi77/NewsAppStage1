@@ -199,62 +199,9 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
         mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
         mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
-        mToPageInput=mRootView.findViewById(R.id.list_controller_to_page_input);
 
         // Set up "of XX" pages text in controller
-        mControllerStatusText.setText(String.format(getString(R.string.list_controller_of_pages), mPages));
-
-        // Implementing the navigate to selected page part
-        mToPageInput.setHint(String.valueOf(mCurrentPage));
-
-        // setup listener for Edit text. When user finishes typing pressing "done" it starts to download selected page
-        mToPageInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                    mIsSoftkeyboardActive = false;
-                    navigateToPage();
-                    mToPageInput.setText(null);
-                    mToPageInput.clearFocus();
-                    if (mInputMethodManager.isActive()) {
-                        mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                    }
-                }
-                return false;
-            }
-        });
-
-        /**
-         * checking whether the softKeyboard should be opened. For instance user clicks on EditText and
-         * then rotates the device, we save the state of EditText value and the status of Keyboard.
-         * If it was opened, we open it again.
-         */
-        if (mSavedInstanceState != null) {
-            int savedInputValue = 0;
-            try {
-                savedInputValue = mSavedInstanceState.getInt(BUNDLE_ENTERED_VALUE);
-                mIsSoftkeyboardActive = mSavedInstanceState.getBoolean(BUNDLE_IS_SOFTKEYBOARD_ACTIVE);
-                Log.d(LOG_TAG, "------> retrieving states after config change. Entered value: " +
-                        savedInputValue + ", mIsSoftKeyboardActive: " + mIsSoftkeyboardActive);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-            if (mIsSoftkeyboardActive) {
-                if (savedInputValue != 0) {
-                    mEnteredPageNumber = savedInputValue;
-                    mToPageInput.setText(String.valueOf(mEnteredPageNumber));
-                }
-                if (!mInputMethodManager.isAcceptingText()) {
-                    Log.d(LOG_TAG,"-------> requesting focus and showing input....");
-                    InputMethodManager imm=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mToPageInput.requestFocus();
-                    imm.showSoftInput(mToPageInput, InputMethodManager.SHOW_FORCED);
-                }
-            }
-
-        }
-
-
+        mControllerStatusText.setText(String.format(getString(R.string.list_controller_of_pages), mCurrentPage, mPages));
 
         /**
          * Setting up onClickListeners for buttons. Cliciking on them will modify the
@@ -294,28 +241,6 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
             mBtnNext.setFocusable(false);
             mBtnToLast.setClickable(false);
             mBtnToLast.setFocusable(false);
-        }
-    }
-
-    /**
-     * Helper method in order to navigate to the selected page via EditText.
-     * We check whether valid values has been set.
-     */
-    private void navigateToPage() {
-        int value = mCurrentPage;
-        // Are there any values given?
-        if (!mToPageInput.getEditableText().toString().equalsIgnoreCase(""))
-            value = Integer.parseInt(mToPageInput.getEditableText().toString());
-        // if yes, check whether is it valid: startPage<= given number <=maximumPage are valid
-        if (value != mCurrentPage) {
-            if (value < 1) {
-                mGuardianQuery.setPage(1);
-            } else if (value > mPages) {
-                mGuardianQuery.setPage(mPages);
-            } else {
-                mGuardianQuery.setPage(value);
-            }
-            mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         }
     }
 

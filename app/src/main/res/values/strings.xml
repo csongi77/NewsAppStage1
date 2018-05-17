@@ -9,13 +9,14 @@
     <string name="no_network_error_message">No network detected. Ensure your device is connected!</string>
     <string name="request_method">GET</string>
     <string name="news_list_txt_no_result">No Results found!</string>
+
+
+    <!-- list controller texts -->
     <string name="list_controller_first">First</string>
     <string name="list_controller_back">Back</string>
     <string name="list_controller_hint">01</string>
-    <string name="list_controller_of_pages">/of <xliff:g id="max_page">%d</xliff:g></string>
+    <string name="list_controller_of_pages">Page: <xliff:g id="actual_page">%d</xliff:g>
+        of <xliff:g id="max_page">%d</xliff:g></string>
     <string name="list_controller_next">Next</string>
     <string name="list_controller_last">Last</string>
-
-    <!-- list controller texts -->
-
 </resources>

@@ -59,27 +59,13 @@ downloaded at once, this menu helps to download more pages -->
             android:text="@string/list_controller_back" />
     </LinearLayout>
 
-    <!-- To specified page button -->
+    <!-- Displaying actual page -->
     <LinearLayout
         android:id="@+id/list_controller_specified_page"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="6dp">
-
-        <EditText
-            android:id="@+id/list_controller_to_page_input"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="end"
-            android:hint="@string/list_controller_hint"
-            android:inputType="number"
-            android:maxLength="2"
-            android:padding="6dp"
-            android:textSize="@dimen/list_controller_txt_size" />
 
         <TextView
             android:id="@+id/list_controller_to_page_message"
