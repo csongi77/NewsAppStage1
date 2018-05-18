@@ -28,6 +28,8 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
     // defining constacnt variables
     private static final String LOG_TAG = NewsLoader.class.getSimpleName();
     private static final String REQUEST_METHOD = "GET";
+    private static final int CONNECT_TIMEOUT=5*1000; // 5 seconds
+    private static final int READ_TIMEOUT=5*1000; // 5 seconds
 
     // defining variables
     private List<NewsEntity> mNewsList;
@@ -105,8 +107,8 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
             URL url = new URL(urlToParse);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(REQUEST_METHOD);
-            urlConnection.setConnectTimeout(10 * 1000);
-            urlConnection.setReadTimeout(10 * 1000);
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            urlConnection.setReadTimeout(READ_TIMEOUT);
 
             // Get Inputstrem -> BufferedReader
             InputStreamReader inputStreamReader = new InputStreamReader(urlConnection.getInputStream());

@@ -2,11 +2,13 @@ package com.example.csongor.newsapp.guardian_api;
 
 import android.os.Parcel;
 
+import com.example.csongor.newsapp.BuildConfig;
+
 public class GuardianSearchQuery implements GuardianQuery {
 
     private static final String GUARDIAN_URL = "http://content.guardianapis.com/search?";
     @ApiKey
-    private static final String API_KEY = ApiKey.API_KEY;
+    private static final String API_KEY = BuildConfig.GUARDIAN_QUERY_API_KEY;
 
     // string used in getQueryString() to get &page=1 URL part
     private static final String PAGE_SYMBOL = "&page=";
