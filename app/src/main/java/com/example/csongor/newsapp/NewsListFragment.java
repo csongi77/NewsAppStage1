@@ -27,21 +27,56 @@ import com.example.csongor.newsapp.helpers.NewsLoader;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class NewsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Bundle> {
 
     private static final String LOG_TAG = NewsListFragment.class.getSimpleName();
     private static final int LOADER_ID = 42;
+
+    @BindView(R.id.list_controller_back_page)
+    LinearLayout mBtnBack;
+    @BindView(R.id.list_controller_next_page)
+    LinearLayout mBtnNext;
+    @BindView(R.id.list_controller_last_page)
+    LinearLayout mBtnToLast;
+    @BindView(R.id.ic_first_page)
+    ImageView mImageToFirst;
+    @BindView(R.id.ic_previous_page)
+    ImageView mImageBack;
+    @BindView(R.id.ic_next_page)
+    ImageView mImageNext;
+    @BindView(R.id.ic_last_page)
+    ImageView mImageToLast;
+    @BindView(R.id.list_controller_txt_first_page)
+    TextView mTxtToFirst;
+    @BindView(R.id.list_controller_txt_back)
+    TextView mTxtBack;
+    @BindView(R.id.list_controller_txt_next)
+    TextView mTxtNext;
+    @BindView(R.id.list_controller_txt_last_page)
+    TextView mTxtToLast;
+    @BindView(R.id.list_controller_to_page_message)
+    TextView mControllerStatusText;
+    @BindView(R.id.list_controller_first_page)
+    LinearLayout mBtnToFirst;
+    @BindView(R.id.news_list_txt_message)
+    TextView mMessage;
     private View mRootView;
     private Loader<Bundle> mLoader;
     private GuardianQuery mGuardianQuery;
     private int mPages, mCurrentPage;
-    private TextView mMessage;
-    private ContentLoadingProgressBar mProgressBar;
+    @BindView(R.id.news_list_progressbar)
+    ContentLoadingProgressBar mProgressBar;
     private LoaderManager mLoaderManager;
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.news_list_view)
+    RecyclerView mRecyclerView;
     private LinearLayout mListController;
     private List<NewsEntity> mNewsList;
     private Button mReloadBtn;
+    private Unbinder unbinder;
 
     // Default constructor
     public NewsListFragment() {
@@ -51,17 +86,18 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = LayoutInflater.from(getContext()).inflate(R.layout.news_list, container, false);
+        unbinder = ButterKnife.bind(this, mRootView);
 
         // assigning values to Views
-        mRecyclerView = mRootView.findViewById(R.id.news_list_view);
+        //mRecyclerView = mRootView.findViewById(R.id.news_list_view);
         RecyclerView.LayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setVisibility(View.GONE);
-        mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
+        // mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
         mProgressBar.show();
         mListController = mRootView.findViewById(R.id.list_controller_menu);
         mListController.setVisibility(View.GONE);
-        mMessage = mRootView.findViewById(R.id.news_list_txt_message);
+        // mMessage = mRootView.findViewById(R.id.news_list_txt_message);
         mMessage.setVisibility(View.VISIBLE);
         mReloadBtn = mRootView.findViewById(R.id.news_list_btn_reload);
         mReloadBtn.setVisibility(View.GONE);
@@ -182,24 +218,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      */
     private void setUpControllerView() {
 
-        /**
-         *  assigning values to views (here because if there are only one result page
-         *  we don't have to make list_controller visible
-         */
         mListController.setVisibility(View.VISIBLE);
-        LinearLayout mBtnToFirst = mRootView.findViewById(R.id.list_controller_first_page);
-        LinearLayout mBtnBack = mRootView.findViewById(R.id.list_controller_back_page);
-        LinearLayout mBtnNext = mRootView.findViewById(R.id.list_controller_next_page);
-        LinearLayout mBtnToLast = mRootView.findViewById(R.id.list_controller_last_page);
-        TextView mControllerStatusText = mRootView.findViewById(R.id.list_controller_to_page_message);
-        ImageView mImageToFirst = mRootView.findViewById(R.id.ic_first_page);
-        ImageView mImageBack = mRootView.findViewById(R.id.ic_previous_page);
-        ImageView mImageNext = mRootView.findViewById(R.id.ic_next_page);
-        ImageView mImageToLast = mRootView.findViewById(R.id.ic_last_page);
-        TextView mTxtToFirst = mRootView.findViewById(R.id.list_controller_txt_first_page);
-        TextView mTxtBack = mRootView.findViewById(R.id.list_controller_txt_back);
-        TextView mTxtNext = mRootView.findViewById(R.id.list_controller_txt_next);
-        TextView mTxtToLast = mRootView.findViewById(R.id.list_controller_txt_last_page);
 
         // Set up default text and icon colors
         mImageToFirst.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_first_page));
