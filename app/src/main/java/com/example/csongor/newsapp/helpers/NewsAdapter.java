@@ -2,6 +2,8 @@ package com.example.csongor.newsapp.helpers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +20,11 @@ import com.example.csongor.newsapp.guardian_api.NewsEntity;
 
 import java.util.List;
 
+import butterknife.BindColor;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Recycler View adapter instead ArrayAdapter in order to avoid findViewById methods.
  * This was suggested by my Reviewer (Vlad Spreys) at my previous project.
@@ -30,6 +37,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
     private List<NewsEntity> mNewsList;
     private Context mContext;
+    private Unbinder unbinder;
 
     /**
      * Constructor for Adapter.
@@ -99,16 +107,28 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     // ViewHolder pattern implementation in order to avoid the cost of finding views by id
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView title;
-        private final TextView author;
-        private final TextView section;
-        private final TextView datePublished;
-        private final LinearLayout layout;
-        private final int newsColor, businessColor, environmentColor;
+        @BindView(R.id.list_item_txt_title)
+        TextView title;
+        @BindView(R.id.list_item_txt_author)
+        TextView author;
+        @BindView(R.id.list_item_txt_section)
+        TextView section;
+        @BindView(R.id.list_item_txt_date_published)
+        TextView datePublished;
+        @BindView(R.id.list_item_layout)
+        LinearLayout layout;
+
+        @BindColor(R.color.color_news)
+        int newsColor;
+        @BindColor(R.color.color_business)
+        int businessColor;
+        @BindColor(R.color.color_environment)
+        int environmentColor;
 
         // constructor for ViewHolder.
-        public ViewHolder(final View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             Log.d(LOG_TAG, "----> ViewHolder has been instantiated");
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -120,16 +140,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     mContext.startActivity(intent);
                 }
             });
-            // setting up views
-            title = itemView.findViewById(R.id.list_item_txt_title);
-            author = itemView.findViewById(R.id.list_item_txt_author);
-            section = itemView.findViewById(R.id.list_item_txt_section);
-            datePublished = itemView.findViewById(R.id.list_item_txt_date_published);
-            layout = itemView.findViewById(R.id.list_item_layout);
-            // setting up colors
-            newsColor = ContextCompat.getColor(mContext, R.color.color_news);
-            businessColor = ContextCompat.getColor(mContext, R.color.color_business);
-            environmentColor = ContextCompat.getColor(mContext, R.color.color_environment);
         }
 
         /**
