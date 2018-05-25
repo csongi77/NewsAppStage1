@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.csongor.newsapp.guardian_api.GuardianQuery;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
 import com.example.csongor.newsapp.helpers.BundleStates;
 import com.example.csongor.newsapp.helpers.NewsAdapter;
