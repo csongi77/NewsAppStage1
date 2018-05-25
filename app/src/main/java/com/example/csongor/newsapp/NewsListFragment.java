@@ -1,5 +1,6 @@
 package com.example.csongor.newsapp;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,7 +67,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     TextView mMessage;
     private View mRootView;
     private Loader<Bundle> mLoader;
-    private GuardianQuery mGuardianQuery;
+    private String mGuardianQuery;
     private int mPages, mCurrentPage;
     @BindView(R.id.news_list_progressbar)
     ContentLoadingProgressBar mProgressBar;
@@ -77,6 +78,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private List<NewsEntity> mNewsList;
     private Button mReloadBtn;
     private Unbinder unbinder;
+    private Uri mUri;
 
     // Default constructor
     public NewsListFragment() {
@@ -104,7 +106,8 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
-        mGuardianQuery = queryBundle.getParcelable(BundleKeys.BUNDLE_QUERY);
+        mGuardianQuery = queryBundle.getString(BundleKeys.BUNDLE_QUERY);
+        mUri = Uri.parse(mGuardianQuery);
 
         // set up loaderManager
         mLoaderManager = getLoaderManager();
@@ -120,7 +123,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
-        mLoader = new NewsLoader(getContext(), mGuardianQuery.getQueryString());
+        mLoader = new NewsLoader(getContext(), mUri.toString());
         return mLoader;
     }
 
@@ -219,6 +222,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     private void setUpControllerView() {
 
         mListController.setVisibility(View.VISIBLE);
+        Uri.Builder builder = mUri.buildUpon();
 
         // Set up default text and icon colors
         mImageToFirst.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_first_page));
@@ -240,19 +244,23 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
          * we'll do it at next step.
          */
         mBtnToLast.setOnClickListener(v -> {
-            mGuardianQuery.setPage(mPages);
+            mUri=builder.appendQueryParameter("page",String.valueOf(mPages)).build();
+            //mGuardianQuery.setPage(mPages);
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnNext.setOnClickListener(v -> {
-            mGuardianQuery.setPage(++mCurrentPage);
+            //mGuardianQuery.setPage(++mCurrentPage);
+            mUri=builder.appendQueryParameter("page",String.valueOf(++mCurrentPage)).build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnToFirst.setOnClickListener(v -> {
-            mGuardianQuery.setPage(1);
+            //mGuardianQuery.setPage(1);
+            mUri=builder.appendQueryParameter("page","1").build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnBack.setOnClickListener(v -> {
-            mGuardianQuery.setPage(--mCurrentPage);
+            //mGuardianQuery.setPage(--mCurrentPage);
+            mUri=builder.appendQueryParameter("page",String.valueOf(--mCurrentPage)).build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
 
