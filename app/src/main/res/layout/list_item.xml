@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:id="@+id/list_item_layout"
     android:focusable="false"
     android:foreground="?android:attr/selectableItemBackground"
     android:background="@color/color_neutral">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
     <!-- the default news list item -->
     <LinearLayout
         android:layout_width="@dimen/o_dp"
@@ -104,4 +107,9 @@
         android:layout_gravity="center"
         android:src="@drawable/ic_navigate_next_black"
         android:padding="@dimen/list_item_layout_padding"/>
+</LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_neutral" />
 </LinearLayout>

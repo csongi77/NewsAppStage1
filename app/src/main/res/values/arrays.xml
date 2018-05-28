@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="section_entry_labels">
+        <item>@string/section_news_label</item>
+        <item>@string/section_environment_label</item>
+        <item>@string/section_business_label</item>
+    </string-array>
+    <string-array name="section_entry_values">
+        <item>@string/section_news_value</item>
+        <item>@string/section_environment_value</item>
+        <item>@string/section_business_value</item>
+    </string-array>
+</resources>

@@ -88,8 +88,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             case "business":
                 holder.getLayout().setBackgroundColor(holder.businessColor);
                 return;
-            default:
+            case "environment":
                 holder.getLayout().setBackgroundColor(holder.environmentColor);
+                return;
+            default:
+                holder.getLayout().setBackgroundColor(holder.otherColor);
         }
     }
 
@@ -124,6 +127,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         int businessColor;
         @BindColor(R.color.color_environment)
         int environmentColor;
+        @BindColor(R.color.color_other)
+        int otherColor;
 
         // constructor for ViewHolder.
         public ViewHolder(View itemView) {

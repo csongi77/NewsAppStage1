@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<EditTextPreference
+    android:title="@string/date_title"
+    android:key="@string/date_key"
+    android:defaultValue="@string/date_default_value"
+    android:inputType="number"/>
+    <MultiSelectListPreference
+        android:key="@string/sections_key"
+        android:title="@string/sections_title"
+        android:entries="@array/section_entry_labels"
+        android:entryValues="@array/section_entry_values"
+        android:defaultValue="@string/section_news_value"/>
+</PreferenceScreen>

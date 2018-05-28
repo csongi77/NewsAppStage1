@@ -9,6 +9,7 @@
     <color name="color_news">#ffcc80</color>
     <color name="color_environment">#c4ffd1</color>
     <color name="color_neutral">#b1b6ba</color>
+    <color name="color_other">#dddddd</color>
 
     <!-- controller colors -->
     <color name="dark_grey">#ff555555</color>

@@ -1,4 +1,5 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
+    >
     <string name="app_name">NewsApp</string>
     <string name="loremipsum45">Lorem ipsum dolor sit amet, consectetuer adip</string>
     <string name="loremipsum35">Lorem ipsum dolor sit amet, consect</string>
@@ -27,4 +28,31 @@
         of <xliff:g id="max_page">%d</xliff:g></string>
     <string name="list_controller_next">Next</string>
     <string name="list_controller_last">Last</string>
+
+    <!-- Settings stings -->
+    <string name="menu_title">Search Options</string>
+    <string name="settings_activity_label">Search Settings</string>
+
+    <!-- List from past X days -->
+    <string name="date_default_value" translatable="false">1</string>
+    <string name="date_key" translatable="false">date_key</string>
+    <string name="date_title">List from the past day(s)</string>
+
+    <!-- Sections strings -->
+    <string name="sections_key" translatable="false">sections_key</string>
+    <string name="sections_title">Sections</string>
+    <string name="all_other_sections">All sections except News, Environment, Business</string>
+    <string name="all_other_sections_query_parameter" translatable="false">-news|-environment|-business</string>
+
+    <!-- Section array labels -->
+    <string name="section_news_label">News</string>
+    <string name="section_environment_label">Environment</string>
+    <string name="section_business_label">Business</string>
+
+    <!-- Section array values -->
+    <string name="section_news_value" translatable="false">news</string>
+    <string name="section_environment_value" translatable="false">environment</string>
+    <string name="section_business_value" translatable="false">business</string>
+
+
 </resources>
