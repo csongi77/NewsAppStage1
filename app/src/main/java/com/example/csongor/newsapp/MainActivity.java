@@ -1,5 +1,7 @@
 package com.example.csongor.newsapp;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -13,9 +15,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +27,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import butterknife.BindInt;
+import butterknife.BindView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             Iterator<String> iterator = sectionSet.iterator();
             sectionsQueryParameterBuilder.append(iterator.next());
             while (iterator.hasNext()) sectionsQueryParameterBuilder.append("|" + iterator.next());
-            sectionsQueryParameter=sectionsQueryParameterBuilder.toString();
+            sectionsQueryParameter = sectionsQueryParameterBuilder.toString();
         } else {
             sectionsQueryParameter = getString(R.string.all_other_sections_query_parameter);
         }
@@ -90,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_options_menu, menu);
+
+        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView)menu.findItem(R.id.menu_item_search_by_keyword).getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.setSubmitButtonEnabled(true);
+
         return super.onCreateOptionsMenu(menu);
     }
 
