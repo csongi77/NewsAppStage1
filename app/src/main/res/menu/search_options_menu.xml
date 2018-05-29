@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<item
-    android:title="@string/menu_title"
-    app:showAsAction="always"
-    android:id="@+id/menu_item_search_options"
-    android:tooltipText="@string/menu_title"
-    android:icon="@drawable/ic_settings_applications"/>
+    <item
+        android:id="@+id/menu_item_search_by_keyword"
+        android:icon="@drawable/ic_search"
+        android:title="@string/menu_search_by_keyword"
+        android:tooltipText="@string/menu_search_by_keyword"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_item_search_options"
+        android:icon="@drawable/ic_settings_applications"
+        android:title="@string/menu_title"
+        android:tooltipText="@string/menu_title"
+        app:showAsAction="ifRoom" />
+
 </menu>

@@ -1,5 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
-    >
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">NewsApp</string>
     <string name="loremipsum45">Lorem ipsum dolor sit amet, consectetuer adip</string>
     <string name="loremipsum35">Lorem ipsum dolor sit amet, consect</string>
@@ -54,5 +53,8 @@
     <string name="section_environment_value" translatable="false">environment</string>
     <string name="section_business_value" translatable="false">business</string>
 
+    <!-- Searchable values -->
+    <string name="searchable_hint">Search News</string>
+    <string name="menu_search_by_keyword">Search by keyword</string>
 
 </resources>
