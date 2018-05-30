@@ -7,25 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-<!-- set up toolbar for menu and search widget
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/color_neutral"
-        android:elevation="@dimen/toolbar_elevation"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/Theme.AppCompat.DayNight"
-        >
-    <android.support.v7.widget.SearchView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/toolbar_search"
-        app:iconifiedByDefault="false">
 
-    </android.support.v7.widget.SearchView>
-    </android.support.v7.widget.Toolbar>
--->
     <!-- This is the main container for all layouts yet. Later it can be extended by a drawer, or add
     Fragments to this -->
 
