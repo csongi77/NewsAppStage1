@@ -32,7 +32,7 @@ import java.util.Set;
 import butterknife.BindInt;
 import butterknife.BindView;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String BASE_URL = "http://content.guardianapis.com/search";
@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.d(LOG_TAG, "------> query string: " + query);
+            mQueryString = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(LOG_TAG, "------> query string: " + mQueryString);
         }
 
         // Check network availability
@@ -81,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setOnCloseListener(this);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -97,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 return true;
             case R.id.menu_item_search_by_keyword:
                 mSearchView.requestFocus();
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(mSearchView,InputMethodManager.SHOW_FORCED);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(mSearchView, InputMethodManager.SHOW_FORCED);
                 return true;
             default:
                 Log.d(LOG_TAG, "------> onOptionsItemSelected");
@@ -124,21 +123,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.d(LOG_TAG, "-----> onQueryTextSubmit has been called");
-        onClose();
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        Log.d(LOG_TAG, "-----> onQueryTextSubmit has been called, newText="+newText);
-        mQueryString=newText;
-        return true;
-    }
-
 
 
     /**
@@ -192,16 +176,4 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         transaction.commit();
     }
 
-    @Override
-    public boolean onClose() {
-        Log.d(LOG_TAG, "-----> onClose has been called");
-        buildQuery();
-        runQuery();
-        mSearchView.setIconified(true);
-        InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        if(inputMethodManager.isActive()){
-            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,InputMethodManager.HIDE_IMPLICIT_ONLY);
-        }
-        return false;
-    }
 }
