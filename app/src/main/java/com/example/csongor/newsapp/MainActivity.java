@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnCloseListener{
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName() + "--->";
     private static final String BASE_URL = "http://content.guardianapis.com/search";
@@ -41,14 +41,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(LOG_TAG, "onCreate has been called");
         mSavedState = savedInstanceState;
-        mQueryParam = "";
+        //  mQueryParam = "";
 
         // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            mQueryParam = intent.getStringExtra(SearchManager.QUERY);
-            Log.d(LOG_TAG, "query string: " + mQueryParam);
-        }
+        handleIntent(getIntent());
+
 
         // Check network availability
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
@@ -58,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        mQueryUriString = buildQuery();
+
         // on Configuration change we don't have to create new fragment just use the originally created one.
         if (savedInstanceState == null) {
+            mQueryUriString = buildQuery();
             Log.d(LOG_TAG, "savedInstanceState is null");
             runQuery(mQueryUriString);
         }
@@ -74,17 +72,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(LOG_TAG, "onStart called");
-        mQueryUriString = buildQuery();
-        Log.e(LOG_TAG, "buildQuery string = " + mQueryUriString);
+        Log.e(LOG_TAG, "onStart called, buildQuery string = " + mQueryUriString);
         if (mSavedState != null) {
             String savedString = mSavedState.getString(BundleKeys.BUNDLE_QUERY);
+            mQueryParam = mSavedState.getString(BundleKeys.BUNDLE_QUERY_PARAM);
+            mQueryUriString = buildQuery();
             Log.d(LOG_TAG, "savedInstanceState savedString = " + savedString);
             if (!mQueryUriString.equals(savedString)) {
                 mQueryUriString = buildQuery();
                 runQuery(mQueryUriString);
             }
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
     }
 
     // inflate Menu
@@ -97,12 +100,15 @@ public class MainActivity extends AppCompatActivity {
 
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);
+        mSearchView.setOnCloseListener(this);
+        if(mQueryParam!=null&&mQueryParam.length()!=0)
+            mSearchView.setQuery(mQueryParam,false);
 
         return super.onCreateOptionsMenu(menu);
     }
 
-
     // on clicking menu item open Settings Activity with Intent
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -120,8 +126,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         Log.d(LOG_TAG, "onSaveInstanceState called");
         outState.putString(BundleKeys.BUNDLE_QUERY, mQueryUriString);
+        outState.putString(BundleKeys.BUNDLE_QUERY_PARAM, mQueryParam);
         mSavedState = outState;
-        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(mSavedState);
+    }
+
+    @Override
+    public boolean onClose() {
+        Log.d(LOG_TAG,"onClose called");
+        return false;
     }
 
 
@@ -154,12 +167,14 @@ public class MainActivity extends AppCompatActivity {
         Uri mBaseUri = Uri.parse(BASE_URL);
 
         Uri.Builder uriBuilder = mBaseUri.buildUpon();
-        mBaseUri = uriBuilder.appendQueryParameter("api-key", BuildConfig.GUARDIAN_QUERY_API_KEY)
-                .appendQueryParameter("q", mQueryParam)
+        uriBuilder = uriBuilder.appendQueryParameter("api-key", BuildConfig.GUARDIAN_QUERY_API_KEY)
                 .appendQueryParameter("section", sectionsQueryParameter)
                 .appendQueryParameter("page-size", "25")
-                .appendQueryParameter("from-date", mCurrentTime).build();
-        Log.d(LOG_TAG, "----->The query string is: " + uriBuilder.toString());
+                .appendQueryParameter("from-date", mCurrentTime);
+        if (mQueryParam != null && mQueryParam.length() != 0)
+            uriBuilder = uriBuilder.appendQueryParameter("q", mQueryParam);
+        mBaseUri = uriBuilder.build();
+        Log.d(LOG_TAG, "----->(buildQuery) The query string is: " + uriBuilder.toString());
 
         return mBaseUri.toString();
     }
@@ -178,4 +193,12 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            mQueryParam = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(LOG_TAG, "query string: " + mQueryParam);
+            mQueryUriString = buildQuery();
+            runQuery(mQueryUriString);
+        }
+    }
 }
