@@ -64,9 +64,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     LinearLayout mBtnToFirst;
     @BindView(R.id.news_list_txt_message)
     TextView mMessage;
-    private View mRootView;
     private Loader<Bundle> mLoader;
-    private String mGuardianQuery;
     private int mPages, mCurrentPage;
     @BindView(R.id.news_list_progressbar)
     ContentLoadingProgressBar mProgressBar;
@@ -86,7 +84,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = LayoutInflater.from(getContext()).inflate(R.layout.news_list, container, false);
+        View mRootView = LayoutInflater.from(getContext()).inflate(R.layout.news_list, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
         // assigning values to Views
@@ -105,7 +103,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // getting arguments from Bundle
         Bundle queryBundle = getArguments();
-        mGuardianQuery = queryBundle.getString(BundleKeys.BUNDLE_QUERY);
+        String mGuardianQuery = queryBundle.getString(BundleKeys.BUNDLE_QUERY);
         mUri = Uri.parse(mGuardianQuery);
 
         // set up loaderManager

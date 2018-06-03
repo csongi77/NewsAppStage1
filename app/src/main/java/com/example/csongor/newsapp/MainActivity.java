@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnCloseListener{
+public class MainActivity extends AppCompatActivity implements SearchView.OnCloseListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName() + "--->";
     private static final String BASE_URL = "http://content.guardianapis.com/search";
@@ -34,19 +34,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
     private String mQueryParam, mQueryUriString;
     private SearchView mSearchView;
     private Bundle mSavedState;
+    private SearchManager mSearchManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(LOG_TAG, "onCreate has been called");
+
+        /*
+         *  we get the reference of savedInstaceState and store it in global variable in order to
+         *  check it at onStart method
+         */
         mSavedState = savedInstanceState;
-        //  mQueryParam = "";
+        mQueryParam = "";
 
         // Get the intent, verify the action and get the query
         handleIntent(getIntent());
 
-
+        // todo make it via reciever
         // Check network availability
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -55,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
 
         }
 
-
-        // on Configuration change we don't have to create new fragment just use the originally created one.
+        // If this is the firs time of starting the app we build the query and fire it
         if (savedInstanceState == null) {
             mQueryUriString = buildQuery();
             Log.d(LOG_TAG, "savedInstanceState is null");
@@ -65,53 +70,74 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
     }
 
     /**
-     * We have to check at this callback that whether shared preferences
-     * has been changed, because in singleTop launch mode the system don't call
-     * onRestoreInstanceState callback :(
+     * At this callback we have to check whether shared preferences
+     * has been changed, because in _singleTop_ launch mode the _system_doesn't_call
+     * onRestoreInstanceState_callback :(
      */
     @Override
     protected void onStart() {
         super.onStart();
         Log.e(LOG_TAG, "onStart called, buildQuery string = " + mQueryUriString);
         if (mSavedState != null) {
+            /*
+              * if the savedInstanceState was not null we get the saved values:
+              * - the Bundle_Query holds the saved full query parameter
+              * - the Bundle_Query_Param holds the search string which was entered into SearchView
+              */
             String savedString = mSavedState.getString(BundleKeys.BUNDLE_QUERY);
             mQueryParam = mSavedState.getString(BundleKeys.BUNDLE_QUERY_PARAM);
+            /*
+             *  IMPORTANT:
+             *  1) we build up a new query. This query is built up based on actual Shared Preferences
+             *  2) if the new query is not the same as the saved one it means that Shared Preferences
+             *      has been changed.
+             *  3) in this case we have to fire the query again
+             */
             mQueryUriString = buildQuery();
             Log.d(LOG_TAG, "savedInstanceState savedString = " + savedString);
             if (!mQueryUriString.equals(savedString)) {
-                mQueryUriString = buildQuery();
                 runQuery(mQueryUriString);
             }
         }
     }
 
+    /**
+     * Because we use Single Top launch mode and the Search Intent is fired from here and this
+     * Activity gets the same Intent we have to override this event as it's described in
+     * Android developer guide (https://developer.android.com/training/search/setup)
+     * @param intent the intent we should handle
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         handleIntent(intent);
     }
 
-    // inflate Menu
+    // inflate Menu with SearchManager as it described at https://developer.android.com/training/search/setup
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_options_menu, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.menu_item_search_by_keyword).getActionView();
 
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setSearchableInfo(mSearchManager.getSearchableInfo(getComponentName()));
+        // set up onCloseListener to be able to handle clearing search params
         mSearchView.setOnCloseListener(this);
-        if(mQueryParam!=null&&mQueryParam.length()!=0)
-            mSearchView.setQuery(mQueryParam,false);
 
+        /**
+          *  if the query param (Search text) is not null we set the query to the last one
+          *  which was saved in Bundle. This is useful in case of device orientation change...
+          */
+        if (mQueryParam != null && mQueryParam.length() != 0)
+            mSearchView.setQuery(mQueryParam, false);
         return super.onCreateOptionsMenu(menu);
     }
 
     // on clicking menu item open Settings Activity with Intent
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // handling menu click events
             case R.id.menu_item_search_options:
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
@@ -122,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
         }
     }
 
+    // Saving State for example on device orientation change
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         Log.d(LOG_TAG, "onSaveInstanceState called");
@@ -131,31 +158,51 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
         super.onSaveInstanceState(mSavedState);
     }
 
+    /**
+     * We have to override the SearchView's default onClose callback method because
+     * we want to reload the list if the user clears and closes the search field.
+     * @return true if the searchView was cleared and we want to reload the query(URI) without any query param.
+     *          false otherwise
+     */
     @Override
     public boolean onClose() {
-        Log.d(LOG_TAG,"onClose called");
-        return false;
+        Log.d(LOG_TAG, "onClose called");
+        String textInQuery = mSearchView.getQuery().toString();
+
+        // if the text in SearchView is not the same as before AND the length of
+        // queryString is 0 then we must reload the query.
+        if (!textInQuery.equalsIgnoreCase(mQueryParam)&&textInQuery.length()==0) {
+            mQueryParam=textInQuery;
+            mSearchView.setQuery(null,false);
+            mQueryUriString = buildQuery();
+            runQuery(mQueryUriString);
+            mSearchView.clearFocus();
+            return true;
+        } else
+            return false;
     }
 
 
     /**
-     * Helper method for building Guardian query. This method is called from
-     * onCreate and onQueryTextSubmit methods.
+     * Helper method for building Guardian query.
      */
     private String buildQuery() {
 
         // getting values of SharedPreferences
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        // DATE
+
+        // building DATE string
         String numberOfDaysString = mSharedPreferences.getString(getString(R.string.date_key), "1");
         int numberOfDaysInt = Integer.parseInt(numberOfDaysString);
         String mCurrentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - (numberOfDaysInt * 24 * 60 * 60 * 1000)));
 
-        // Sections
+        // building Sections string
         StringBuilder sectionsQueryParameterBuilder = new StringBuilder("");
         String sectionsQueryParameter;
         Set<String> sectionSet = mSharedPreferences.getStringSet(getString(R.string.sections_key), null);
         if (sectionSet != null && !sectionSet.isEmpty()) {
+
+            // if any section has been selected, we iterate over the Set in order to build up sections query parameter
             Iterator<String> iterator = sectionSet.iterator();
             sectionsQueryParameterBuilder.append(iterator.next());
             while (iterator.hasNext()) sectionsQueryParameterBuilder.append("|" + iterator.next());
@@ -164,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
             sectionsQueryParameter = getString(R.string.all_other_sections_query_parameter);
         }
 
+        // and now we build up the query
         Uri mBaseUri = Uri.parse(BASE_URL);
 
         Uri.Builder uriBuilder = mBaseUri.buildUpon();
@@ -171,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
                 .appendQueryParameter("section", sectionsQueryParameter)
                 .appendQueryParameter("page-size", "25")
                 .appendQueryParameter("from-date", mCurrentTime);
+
+        // we have to append query param (&q=...) if it has already defined
         if (mQueryParam != null && mQueryParam.length() != 0)
             uriBuilder = uriBuilder.appendQueryParameter("q", mQueryParam);
         mBaseUri = uriBuilder.build();
@@ -181,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
 
     /**
      * Helper method for executing query and display it in a fragment
+     * @param restQueryString - the URI query in String format.
      */
     private void runQuery(String restQueryString) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -193,6 +244,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
         transaction.commit();
     }
 
+    /**
+     * helper method for handling incoming search intents.
+     * @param intent the incoming intent. If it's an intent with a Search Action,
+     *               we build up a new query with the search parameter and fire the query
+     */
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             mQueryParam = intent.getStringExtra(SearchManager.QUERY);
@@ -201,4 +257,5 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
             runQuery(mQueryUriString);
         }
     }
+
 }

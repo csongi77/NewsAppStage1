@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <!-- we have to use singleTop launch mode for main activity
-        because we want to show the search results in the same activity -->
+        because we want to show the search results in the same activity because
+         in case of multiple search actions we have to press back button many times-->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">
