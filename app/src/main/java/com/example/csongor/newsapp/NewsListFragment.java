@@ -88,15 +88,14 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         unbinder = ButterKnife.bind(this, mRootView);
 
         // assigning values to Views
-        //mRecyclerView = mRootView.findViewById(R.id.news_list_view);
         RecyclerView.LayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setVisibility(View.GONE);
-        // mProgressBar = mRootView.findViewById(R.id.news_list_progressbar);
+
         mProgressBar.show();
         mListController = mRootView.findViewById(R.id.list_controller_menu);
         mListController.setVisibility(View.GONE);
-        // mMessage = mRootView.findViewById(R.id.news_list_txt_message);
+
         mMessage.setVisibility(View.VISIBLE);
         mReloadBtn = mRootView.findViewById(R.id.news_list_btn_reload);
         mReloadBtn.setVisibility(View.GONE);
