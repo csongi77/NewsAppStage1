@@ -14,7 +14,7 @@ import android.net.NetworkInfo;
  */
 public class InternetChecker extends BroadcastReceiver {
 
-    public static InternetCheckListener mInternetCheckListener;
+    public static InternetCheckListener sInternetCheckListener;
 
     public InternetChecker() {
         super();
@@ -26,8 +26,8 @@ public class InternetChecker extends BroadcastReceiver {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if (mInternetCheckListener != null) {
-            mInternetCheckListener.onInternetStatusChanged(isConnected);
+        if (sInternetCheckListener != null) {
+            sInternetCheckListener.onInternetStatusChanged(isConnected);
         }
     }
 
