@@ -11,7 +11,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final String LOG_TAG = NewsListFragment.class.getSimpleName();
     private static final int LOADER_ID = 42;
+    private static final String PAGE_KEY = "page";
 
     @BindView(R.id.list_controller_back_page)
     LinearLayout mBtnBack;
@@ -136,7 +136,6 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
         // checking result status first because it always exists
         @BundleStates int mResult;
         mResult = data.getInt(BundleKeys.BUNDLE_STATUS);
-        Log.d(LOG_TAG, "mReturnedResult=" + mResult);
 
         // calling helper methods depending on result.
         switch (mResult) {
@@ -166,7 +165,6 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoaderReset(@NonNull Loader<Bundle> loader) {
-        Log.d(LOG_TAG, "-----> onLoaderReset called");
         mProgressBar.show();
         mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.GONE);
@@ -240,23 +238,23 @@ public class NewsListFragment extends Fragment implements LoaderManager.LoaderCa
          * we'll do it at next step.
          */
         mBtnToLast.setOnClickListener(v -> {
-            mUri=builder.appendQueryParameter("page",String.valueOf(mPages)).build();
+            mUri=builder.appendQueryParameter(PAGE_KEY,String.valueOf(mPages)).build();
             //mGuardianQuery.setPage(mPages);
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnNext.setOnClickListener(v -> {
             //mGuardianQuery.setPage(++mCurrentPage);
-            mUri=builder.appendQueryParameter("page",String.valueOf(++mCurrentPage)).build();
+            mUri=builder.appendQueryParameter(PAGE_KEY,String.valueOf(++mCurrentPage)).build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnToFirst.setOnClickListener(v -> {
             //mGuardianQuery.setPage(1);
-            mUri=builder.appendQueryParameter("page","1").build();
+            mUri=builder.appendQueryParameter(PAGE_KEY,"1").build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
         mBtnBack.setOnClickListener(v -> {
             //mGuardianQuery.setPage(--mCurrentPage);
-            mUri=builder.appendQueryParameter("page",String.valueOf(--mCurrentPage)).build();
+            mUri=builder.appendQueryParameter(PAGE_KEY,String.valueOf(--mCurrentPage)).build();
             mLoader = mLoaderManager.restartLoader(LOADER_ID, null, NewsListFragment.this);
         });
 

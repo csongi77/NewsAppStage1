@@ -44,7 +44,7 @@
     <string name="all_other_sections_query_parameter" translatable="false">-news|-environment|-business</string>
 
     <!-- Section array labels -->
-    <string name="section_news_label">Hírek</string>
+    <string name="section_news_label">News</string>
     <string name="section_environment_label">Environment</string>
     <string name="section_business_label">Business</string>
     <string name="section_other_label">Other section</string>
