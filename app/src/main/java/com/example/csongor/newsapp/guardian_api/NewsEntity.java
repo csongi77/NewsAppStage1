@@ -1,36 +1,15 @@
 package com.example.csongor.newsapp.guardian_api;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.example.csongor.newsapp.R;
 
 /**
  * Basic News Entity
  */
 public class NewsEntity implements Parcelable {
-    private final String mTitle;
-    private final String mSection;
-    private final String mAuthor;
-    private final String mDatePublished;
-    private final String mURL;
-    /**
-     * Constructor of Entity
-     *
-     * @param title         - the title of News
-     * @param section       - section of News
-     * @param author        - author of News
-     * @param datePublished - the publication date
-     * @param url           - the URL of Article
-     */
-    public NewsEntity(String title, String section, String author, String datePublished, String url) {
-        mTitle = title;
-        mSection = section;
-        mAuthor = author;
-        mDatePublished = formatDate(datePublished);
-        mURL = url;
-
-    }
-
-    // Parcelable implementation
     public static final Creator<NewsEntity> CREATOR = new Creator<NewsEntity>() {
         @Override
         public NewsEntity createFromParcel(Parcel in) {
@@ -42,7 +21,32 @@ public class NewsEntity implements Parcelable {
             return new NewsEntity[size];
         }
     };
+    private final String mTitle;
+    private final String mSection;
+    private final String mAuthor;
+    private final String mDatePublished;
+    private final String mURL;
+    private Context mContext;
 
+    /**
+     * Constructor of Entity
+     *
+     * @param title         - the title of News
+     * @param section       - section of News
+     * @param author        - author of News
+     * @param datePublished - the publication date
+     * @param url           - the URL of Article
+     */
+    public NewsEntity(Context context, String title, String section, String author, String datePublished, String url) {
+        mTitle = title;
+        mSection = section;
+        mAuthor = author;
+        mContext = context;
+        mDatePublished = formatDate(datePublished);
+        mURL = url;
+    }
+
+    // Parcelable implementation
     protected NewsEntity(Parcel in) {
         mTitle = in.readString();
         mSection = in.readString();
@@ -75,7 +79,6 @@ public class NewsEntity implements Parcelable {
      * @return - name of Author
      */
     public String getAuthor() {
-        if (mAuthor == null || mAuthor.equalsIgnoreCase("")) return "Anonymus";
         return mAuthor;
     }
 
@@ -119,7 +122,8 @@ public class NewsEntity implements Parcelable {
     /**
      * Overriding hashCode
      *
-     * @return heshCode
+     * @return heshCode                holder.getSection().setText(mContext.getString(R.string.section_news_label));
+
      */
     @Override
     public int hashCode() {
@@ -131,28 +135,12 @@ public class NewsEntity implements Parcelable {
     }
 
 
-    /**
-     * Describe the kinds of special objects contained in this Parcelable
-     * instance's marshaled representation. For example, if the object will
-     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
-     * the return value of this method must include the
-     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
-     *
-     * @return a bitmask indicating the set of special object types marshaled
-     * by this Parcelable object instance.
-     */
+    // Parcelable implementation
     @Override
     public int describeContents() {
         return 0;
     }
 
-    /**
-     * Flatten this object in to a Parcel.
-     *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written.
-     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mTitle);
@@ -169,14 +157,16 @@ public class NewsEntity implements Parcelable {
      * @return - The return String in dd-MM-yyyy hh:mm
      */
     private String formatDate(String datePublished) {
-        //cut original string
-        String[] toCut = datePublished.split("T|Z");
-        String[] dateToCut = toCut[0].split("-");
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(dateToCut[2] + "-").append(dateToCut[1] + "-").append(dateToCut[0] + ", ");
-        String[] timeToCut = toCut[1].split(":");
-        stringBuilder.append(timeToCut[0] + ":" + timeToCut[1] + "Z");
-        return stringBuilder.toString();
+        //cut original string if it's not null or empty
+        if (datePublished != null && !datePublished.equalsIgnoreCase("") && datePublished.length() != 0) {
+            String[] toCut = datePublished.split("T|Z");
+            String[] dateToCut = toCut[0].split("-");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(dateToCut[2] + "-").append(dateToCut[1] + "-").append(dateToCut[0] + ", ");
+            String[] timeToCut = toCut[1].split(":");
+            stringBuilder.append(timeToCut[0] + ":" + timeToCut[1] + mContext.getString(R.string.zulu_time));
+            return stringBuilder.toString();
+        } else return mContext.getString(R.string.date_unknown);
     }
 }
 

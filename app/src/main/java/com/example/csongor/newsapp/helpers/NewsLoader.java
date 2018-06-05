@@ -8,6 +8,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.example.csongor.newsapp.BundleKeys;
+import com.example.csongor.newsapp.R;
 import com.example.csongor.newsapp.guardian_api.NewsEntity;
 
 import org.json.JSONArray;
@@ -28,9 +29,9 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
     // defining constacnt variables
     private static final String LOG_TAG = NewsLoader.class.getSimpleName();
     private static final String REQUEST_METHOD = "GET";
-    private static final int CONNECT_TIMEOUT=5*1000; // 5 seconds for setting connection timeout
-    private static final int READ_TIMEOUT=5*1000; // 5 seconds for setting read timeout
-    private static final int NOT_SET_YET=0;
+    private static final int CONNECT_TIMEOUT = 5 * 1000; // 5 seconds for setting connection timeout
+    private static final int READ_TIMEOUT = 5 * 1000; // 5 seconds for setting read timeout
+    private static final int NOT_SET_YET = 0;
 
     // defining variables
     private List<NewsEntity> mNewsList;
@@ -43,7 +44,7 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
     // default constructor
     public NewsLoader(@NonNull Context context, String queryUrl) {
         super(context);
-        mCurrentPage=NOT_SET_YET;
+        mCurrentPage = NOT_SET_YET;
         mUrl = queryUrl;
     }
 
@@ -62,7 +63,7 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
     @Override
     public Bundle loadInBackground() {
         Log.d(LOG_TAG, "-----> loadInBackGround started");
-        if (mCurrentPage==NOT_SET_YET) {
+        if (mCurrentPage == NOT_SET_YET) {
             // First make connection and get data based on URL REST API
             String jsonString = connectAndLoad(mUrl);
 
@@ -175,7 +176,7 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
                         author = toTrim[1].trim();
                         title = toTrim[0].trim();
                     } else {
-                        author = "Not available";
+                        author = getContext().getString(R.string.author_not_available);
                     }
 
                     // getting section
@@ -183,11 +184,10 @@ public class NewsLoader extends AsyncTaskLoader<Bundle> {
 
                     // getting and formatting publication date
                     String datePublished = result.getString("webPublicationDate").trim();
-                    if (datePublished == null) datePublished = "Unknown";
                     String webUrl = result.getString("webUrl").trim();
 
                     // creating NewsEntity from the values
-                    NewsEntity newsEntity = new NewsEntity(title, section, author, datePublished, webUrl);
+                    NewsEntity newsEntity = new NewsEntity(getContext(), title, section, author, datePublished, webUrl);
                     newsListToReturn.add(newsEntity);
                 }
             } catch (JSONException e) {

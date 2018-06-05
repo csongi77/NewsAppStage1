@@ -44,9 +44,10 @@
     <string name="all_other_sections_query_parameter" translatable="false">-news|-environment|-business</string>
 
     <!-- Section array labels -->
-    <string name="section_news_label">News</string>
+    <string name="section_news_label">Hírek</string>
     <string name="section_environment_label">Environment</string>
     <string name="section_business_label">Business</string>
+    <string name="section_other_label">Other section</string>
 
     <!-- Section array values -->
     <string name="section_news_value" translatable="false">news</string>
@@ -56,5 +57,10 @@
     <!-- Searchable values -->
     <string name="searchable_hint">Search News</string>
     <string name="menu_search_by_keyword">Search by keyword</string>
+
+    <!-- Additional UI displayed Entity Strings -->
+    <string name="author_not_available">Not available</string>
+    <string name="zulu_time">Z</string>
+    <string name="date_unknown">Unknown</string>
 
 </resources>

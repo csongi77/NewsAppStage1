@@ -79,20 +79,25 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         NewsEntity entity = mNewsList.get(position);
         holder.getTitle().setText(entity.getTitle());
         holder.getDatePublished().setText(entity.getDatePublished());
-        holder.getSection().setText(entity.getSection());
         holder.getAuthor().setText(entity.getAuthor());
+
+        // setting background color and translatable section name
         switch (entity.getSection().toLowerCase()) {
             case "news":
                 holder.getLayout().setBackgroundColor(holder.newsColor);
+                holder.getSection().setText(mContext.getString(R.string.section_news_label));
                 return;
             case "business":
                 holder.getLayout().setBackgroundColor(holder.businessColor);
+                holder.getSection().setText(mContext.getString(R.string.section_business_label));
                 return;
             case "environment":
                 holder.getLayout().setBackgroundColor(holder.environmentColor);
+                holder.getSection().setText(mContext.getString(R.string.section_environment_label));
                 return;
             default:
                 holder.getLayout().setBackgroundColor(holder.otherColor);
+                holder.getSection().setText(mContext.getString(R.string.section_other_label));
         }
     }
 
