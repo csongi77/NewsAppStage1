@@ -26,6 +26,15 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnCloseListener, InternetChecker.InternetCheckListener {
 
+    /**
+     * In order to run the App correctly please change BuildConfig.GUARDIAN_QUERY_API_KEY to the
+     * key I've sent you in student notes because I wouldn't like to share sensitive info on
+     * GitHub (for instance my api-key).This procedure id documented at
+     * @see  {@linkhttps://technobells.com/best-way-to-store-your-api-keys-for-your-android-studio-project-e4b5e8bb7d23}
+     * and I implemented it on my previous reviewer's suggestion.
+     */
+    private static final String API_KEY=BuildConfig.GUARDIAN_QUERY_API_KEY;
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName() + "--->";
     private static final String BASE_URL = "http://content.guardianapis.com/search";
     private String mQueryParam, mQueryUriString;
@@ -223,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnClos
 
         Uri.Builder uriBuilder = mBaseUri.buildUpon();
         // Idea and suggestion for storing api-key in BuildConfig is from my previous reviewer
-        uriBuilder = uriBuilder.appendQueryParameter("api-key", BuildConfig.GUARDIAN_QUERY_API_KEY)
+        uriBuilder = uriBuilder.appendQueryParameter("api-key", API_KEY)
                 .appendQueryParameter("section", sectionsQueryParameter)
                 .appendQueryParameter("page-size", "25")
                 .appendQueryParameter("from-date", mCurrentTime);
